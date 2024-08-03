@@ -33,7 +33,8 @@ from Commandes.youtube_search import youtube_search
 from swinny.swinny import swinny_collection,swinny_drawings,swinny_musics
 from swinny.hugo import hugo_destinations
 from swinny.jeux import jeux1,jeux2
-from ARAM.randomizeur import aram_random,aram_teamrandom,reroll,random_pick
+#from ARAM.mainAram import aram_random,aram_teamrandom,reroll,random_pick
+from fonctions.ARAM.mainAram import aram_maker,reroll,random_pick
 
 from Compos.compos import challenges,challenges_images,challenges_champ
 
@@ -59,26 +60,20 @@ async def on_message(message):
   
   await customW(message)
 
-#============================MESSAGES pour la VX tiwtter/insta (Clement)==============================
+#============================MESSAGES pour la VX twitter/insta (Clement)==============================
 
   await VXBot(message)
 
 #===================================ARAM===================================
 
-  if message.content.startswith("!aram_random"):
-    await message.channel.send(aram_random(message))
-
-#====================
-
-  if message.content.startswith("!aram_teamrandom"):
-    await message.channel.send(aram_teamrandom(message))
+  if message.content.startswith("!aram_"):
+    await message.channel.send(aram_maker(message))
 
 #====================
 
   if message.content.startswith("!reroll"):
     await message.channel.send(reroll(message))
 
-#====================
 
   if message.content.startswith("!random_pick"):
     await message.channel.send(random_pick())   

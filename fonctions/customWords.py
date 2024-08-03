@@ -1,7 +1,7 @@
 import random
 
 async def customW(message):
-  if message.content.lower() == "hello":
+  if message.content.lower() == "hello" or message.content.lower() == "salut":
     await message.channel.send("Hello! <:05_CuteQuokka:873337522174959626>")
 
   if message.content.lower() == "kebab":
