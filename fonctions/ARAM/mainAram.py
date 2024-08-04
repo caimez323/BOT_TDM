@@ -9,7 +9,6 @@ def aram_maker(message):
   if teamType not in ["random","teamrandom"]:
     return "Merci de choisir un type de team valide : random ou teamrandom"
 
-  team_1,team_2 = [],[]
   playersList = message.content.split()[1:]
   nbrJoueurs = len(playersList)
 

@@ -1,8 +1,6 @@
 import os
 import discord
 
-import time
-import nacl
 import random
 import asyncio
 
@@ -18,25 +16,21 @@ import datetime
 from dotenv import load_dotenv
 from discord.utils import get
 
-from fonctions.customWords import customW 
-from fonctions.jvaisVX.main import VXBot
+import fonctions as f
+
+
+
 from Commandes.vote import vote
 from Commandes.duel import duel
 from Commandes.clash import clash
-from Commandes.combat import combat
-from Commandes.bolosse import bolosse
 from Commandes.justeprix import justeprix
 from Commandes.price import price,priceu
-#from Musiques.musiques import join,leave,stop
-from Commandes.random_number import random_number
+from fonctions.random_number import random_number
 from Commandes.youtube_search import youtube_search
 from swinny.swinny import swinny_collection,swinny_drawings,swinny_musics
 from swinny.hugo import hugo_destinations
 from swinny.jeux import jeux1,jeux2
-#from ARAM.mainAram import aram_random,aram_teamrandom,reroll,random_pick
-from fonctions.ARAM.mainAram import aram_maker,reroll,random_pick
 
-from Compos.compos import challenges,challenges_images,challenges_champ
 
 
 intents = discord.Intents.all()
@@ -58,40 +52,39 @@ async def on_message(message):
 
 #=================================MESSAGES Divers=================================
   
-  await customW(message)
+  await f.customWords.customW(message)
 
 #============================MESSAGES pour la VX twitter/insta (Clement)==============================
 
-  await VXBot(message)
+  await f.jvaisVX.main.VXBot(message)
 
 #===================================ARAM===================================
 
   if message.content.startswith("!aram_"):
-    await message.channel.send(aram_maker(message))
+    await message.channel.send(f.ARAM.mainAram.aram_maker(message))
 
-#====================
 
   if message.content.startswith("!reroll"):
-    await message.channel.send(reroll(message))
-
+    await message.channel.send(f.ARAM.mainAram.reroll(message))
 
   if message.content.startswith("!random_pick"):
-    await message.channel.send(random_pick())   
+    await message.channel.send(f.ARAM.mainAram.random_pick())   
+
 
 #===================================COMPOS===================================
 
   if message.content.lower() == "!challenges":
-    await challenges(message)
+    await f.COMPO.compos.challenges(message)
 
   if message.content.startswith("!chall") or message.content.startswith("!comp") or message.content.startswith("!region") or message.content.startswith("!région"):
-    await challenges_images(message)
+    await f.COMPO.compos.challenges_images(message)
 
   if message.content.startswith("!champ"):
-    await challenges_champ(message)
+    await f.COMPO.compos.challenges_champ(message)
     
 #=================================COMMANDES=================================
 
-  if message.content.startswith("!purge") and message.author.name=="Laiken":
+  if message.content.startswith("!purge") and message.author.id==172362870439411713: #Laiken
     await message.channel.purge(limit=int(message.content.split()[1]))
 
 #====================
@@ -101,18 +94,18 @@ async def on_message(message):
 
 #====================
   if message.content.lower() == "!bolosse":
-    await bolosse(message)
+    await f.bolosse(message)
 
 #====================
 
   if message.content.startswith("!combat"):
-    await combat(message)
+    await f.combat(message)
     
 #====================
 
   if message.content.startswith("!piece"):
     await message.channel.send("Lancement de la pièce...")
-    await asyncio.sleep(3)
+    await asyncio.sleep(1)
     await message.channel.send(random.choice(["Pile","Face"]))
 
 #====================
