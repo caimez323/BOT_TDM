@@ -20,7 +20,6 @@ from discord.ui import Button,View
 import fonctions as f
 
 from Commandes.duel import duel
-from Commandes.justeprix import justeprix
 from Commandes.price import price,priceu
 from swinny.swinny import swinny_collection,swinny_drawings,swinny_musics
 from swinny.hugo import hugo_destinations
@@ -148,11 +147,6 @@ async def on_message(message):
 
   if message.content.startswith("!ytb"):
     await f.youtube_search(message)
-    
-#====================
-
-  if message.content.lower() == "!justeprix":
-    await justeprix(message,client)
 
 #====================    
 
