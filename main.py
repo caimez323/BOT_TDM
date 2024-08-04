@@ -25,7 +25,6 @@ from Commandes.duel import duel
 from Commandes.clash import clash
 from Commandes.justeprix import justeprix
 from Commandes.price import price,priceu
-from fonctions.random_number import random_number
 from Commandes.youtube_search import youtube_search
 from swinny.swinny import swinny_collection,swinny_drawings,swinny_musics
 from swinny.hugo import hugo_destinations
@@ -111,13 +110,8 @@ async def on_message(message):
 #====================
 
   if message.content.startswith("!random_number"):
-    await random_number(message)
+    await f.random_number(message)
 
-#====================
-
-  if message.content.startswith("!vote"):
-    await vote(message)
-    
 #====================
 
   if message.content.startswith("!pp"):
