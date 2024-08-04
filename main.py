@@ -19,13 +19,6 @@ from discord.ui import Button,View
 
 import fonctions as f
 
-from Commandes.duel import duel
-from Commandes.price import price,priceu
-from swinny.swinny import swinny_collection,swinny_drawings,swinny_musics
-from swinny.hugo import hugo_destinations
-from swinny.jeux import jeux1,jeux2
-
-
 
 intents = discord.Intents.all()
 intents.members = True
@@ -139,8 +132,8 @@ async def on_message(message):
     await message.channel.send("Merci d'indiquer un utilisateur correct")
 
 #====================
-
-  if message.content.startswith("!clash"):
+#TODO 
+  if message.content.startswith("!clash"): 
     await f.clash(message)
 
 #====================
@@ -156,37 +149,10 @@ async def on_message(message):
 #====================    
 
   if message.content.startswith("!duel"):
-    await duel(message,client)
+    await f.duel(message,client)
 
-#====================    
-
-  if message.content.startswith("!price"):
-    await price(message)
-
-  if message.content.startswith("!lvlprice"):
-    await priceu(message)
-
-#=================================SWINNY=================================
-
-  if message.content.lower() == "!swinny_collection":
-    await swinny_collection(message)  
-
-  if message.content.startswith("!dessin"):
-    await swinny_drawings(message)  
-
-  if message.content.lower() == "!swinny_musics":
-    await swinny_musics(message) 
-    
-  if message.content.lower() == "!hugo_destinations":
-    await hugo_destinations(message)
-
-  if message.content.lower() == "!jeux1":
-    await jeux1(message)
-
-  if message.content.lower() == "!jeux2":
-    await jeux2(message)
-
-#=================================MUSIQUE=================================
+#=================================MUSIQUE================================= 
+#!TODO ?
 '''
   if message.content.lower() == "!join":
     await join(message)  
@@ -211,76 +177,11 @@ async def on_member_join(member):
 @client.event
 async def on_member_remove(member):
   print("commandes")
-  channel_réunion = member.guild.get_channel(693866632690401280)
+  channel_reunion = member.guild.get_channel(693866632690401280)
   for channel in member.guild.channels:
     if channel.name.startswith('Member'):
-      await channel_réunion.send(f"{member.name} a quitté le Discord")
+      await channel_reunion.send(f"{member.name} a quitté le Discord")
       await channel.edit(name=f'Members: {(member.guild.member_count)-4}')
-
-#==========================================================================
-
-# @client.event
-# async def on_message_edit(before,after):
-#   channel_test = before.guild.get_channel(1039948872849555476)
-#   if before.channel == channel_test or before.author.id == 850798626946809867 or before.content.startswith('http') or before.author.id == 432610292342587392:
-#     return
-#   try:
-#     await channel_test.send(f"**Message modifié** dans {before.channel.mention} :\n{before.author.name} (*{before.created_at.day}/{before.created_at.month}/{before.created_at.year} | {before.created_at.hour+2}:{before.created_at.minute}*) : {before.attachments[0]} ➡️ {after.content}")
-#   except IndexError:
-#     pass
-#   if not before.attachments:
-#     await channel_test.send(f"**Message modifié** dans {before.channel.mention} :\n{before.author.name} (*{before.created_at.day}/{before.created_at.month}/{before.created_at.year} | {before.created_at.hour+2}:{before.created_at.minute}*) : {before.content} ➡️ {after.content}")
-
-# #====================
-# @client.event
-# async def on_message_delete(message):
-#   channel_test = message.guild.get_channel(1039948872849555476)
-#   if message.channel == channel_test or message.author.id == 850798626946809867:
-#     return
-#   try:
-#     await channel_test.send(f"**Message supprimé** dans {message.channel.mention} :\n{message.author.name} (*{message.created_at.day}/{message.created_at.month}/{message.created_at.year} | {message.created_at.hour+2}:{message.created_at.minute}*) : {message.attachments[0]}")
-#   except IndexError:
-#     pass
-#   if not message.attachments:
-#     await channel_test.send(f"**Message supprimé** dans {message.channel.mention} :\n{message.author.name} (*{message.created_at.day}/{message.created_at.month}/{message.created_at.year} | {message.created_at.hour+2}:{message.created_at.minute}*) : {message.content}")
-
-#====================
-
-@client.event
-async def on_raw_reaction_add(payload):
-  print(payload.emoji.id)
-  print("========================================")
-  print("Added :", payload.member.name, payload.emoji.name)
-  print("========================================")
-
-@client.event
-async def on_raw_reaction_remove(payload):
-  print("========================================")
-  guild = client.get_guild(payload.guild_id) 
-  member = get(guild.members, id=payload.user_id)
-  print("Removed :", member.name, payload.emoji.name)
-  print("========================================")
-
-#====================
-  
-'''
-@client.event
-async def schedule_daily_message():
-  now = datetime.datetime.now()
-  print(now)
-  then = now + datetime.timedelta(days=1)
-  then = now.replace(hour=13, minute=1)
-  wait_time = (then-now).total_seconds()
-  await asyncio.sleep(wait_time)
-
-  channel = client.get_channel(693866632690401280)
-  user_id = "510537578961829890"
-  await channel.send(f"<@{user_id}> cc c'l'heure mrc ")
-'''
-  
-#==========================================================================
-
-
 
 #==========================================================================
 load_dotenv(".env")
