@@ -15,6 +15,7 @@ import datetime
 
 from dotenv import load_dotenv
 from discord.utils import get
+from discord.ui import Button,View
 
 import fonctions as f
 
@@ -44,6 +45,23 @@ async def on_message(message):
   if message.author == client.user:
     return
 
+  if message.content == "!bouton":
+      # Créer un bouton
+      bouton = Button(label="Cliquez-moi!", style=discord.ButtonStyle.green)
+
+      # Définir ce qui se passe lorsque le bouton est cliqué
+      async def on_bouton_click(interaction: discord.Interaction):
+          await interaction.response.send_message("Bouton cliqué!")
+
+      # Assigner le callback au bouton
+      bouton.callback = on_bouton_click
+
+      # Créer une vue et y ajouter le bouton
+      view = View()
+      view.add_item(bouton)
+
+      # Envoyer le message avec le bouton
+      await message.channel.send("Voici un bouton :", view=view)
 #=================================MESSAGES Divers=================================
   
   await f.customWords.customW(message)
@@ -130,7 +148,7 @@ async def on_message(message):
 
   if message.content.startswith("!ytb"):
     await f.youtube_search(message)
-
+    
 #====================
 
   if message.content.lower() == "!justeprix":
