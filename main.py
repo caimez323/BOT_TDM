@@ -18,9 +18,6 @@ from discord.utils import get
 
 import fonctions as f
 
-
-
-from Commandes.vote import vote
 from Commandes.duel import duel
 from Commandes.clash import clash
 from Commandes.justeprix import justeprix
@@ -115,10 +112,16 @@ async def on_message(message):
 #====================
 
   if message.content.startswith("!pp"):
-    if not message.mentions:
-      await message.channel.send("Erreur, veuillez entrer un membre valide en le mentionnant.")
-      return
-    await message.channel.send(message.mentions[0].avatar)
+    userDesignation = message.content.split()[-1]
+    if len(message.mentions)>0:
+       await message.channel.send(message.mentions[0].avatar)
+       return
+    memberList = message.guild.members
+    for member in memberList:
+      if userDesignation in [member.name,member.nick,member.global_name]:
+        await message.channel.send(member.avatar)
+        return
+    await message.channel.send("Merci d'indiquer un utilisateur correct")
 
 #====================
 
