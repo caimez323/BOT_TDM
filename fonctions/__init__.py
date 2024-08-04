@@ -9,3 +9,4 @@ from .clash import clash
 from .youtube_search import youtube_search
 from .justeprix import justeprix
 from .duel import duel
+from .help import help

@@ -37,23 +37,10 @@ async def on_message(message):
   if message.author == client.user:
     return
 
-  if message.content == "!bouton":
-      # Créer un bouton
-      bouton = Button(label="Cliquez-moi!", style=discord.ButtonStyle.green)
+#=================================HELP=================================
+  if message.content.startswith("!help"):
+    await f.help(message)
 
-      # Définir ce qui se passe lorsque le bouton est cliqué
-      async def on_bouton_click(interaction: discord.Interaction):
-          await interaction.response.send_message("Bouton cliqué!")
-
-      # Assigner le callback au bouton
-      bouton.callback = on_bouton_click
-
-      # Créer une vue et y ajouter le bouton
-      view = View()
-      view.add_item(bouton)
-
-      # Envoyer le message avec le bouton
-      await message.channel.send("Voici un bouton :", view=view)
 #=================================MESSAGES Divers=================================
   
   await f.customWords.customW(message)
@@ -67,13 +54,11 @@ async def on_message(message):
   if message.content.startswith("!aram_"):
     await message.channel.send(f.ARAM.mainAram.aram_maker(message))
 
-
   if message.content.startswith("!reroll"):
     await message.channel.send(f.ARAM.mainAram.reroll(message))
 
   if message.content.startswith("!random_pick"):
     await message.channel.send(f.ARAM.mainAram.random_pick())   
-
 
 #===================================COMPOS===================================
 
