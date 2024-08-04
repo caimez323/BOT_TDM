@@ -147,6 +147,11 @@ async def on_message(message):
 
   if message.content.startswith("!ytb"):
     await f.youtube_search(message)
+    
+#====================
+
+  if message.content.lower() == "!justeprix":
+    await f.justeprix(message,client)
 
 #====================    
 
@@ -243,14 +248,13 @@ async def on_member_remove(member):
 
 @client.event
 async def on_raw_reaction_add(payload):
-  await tournoi_add(payload,client)
+  print(payload.emoji.id)
   print("========================================")
   print("Added :", payload.member.name, payload.emoji.name)
   print("========================================")
 
 @client.event
 async def on_raw_reaction_remove(payload):
-  await tournoi_remove(payload,client)
   print("========================================")
   guild = client.get_guild(payload.guild_id) 
   member = get(guild.members, id=payload.user_id)

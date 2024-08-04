@@ -12,19 +12,19 @@ class PaginationView(View):
         self.links = links
         self.current_link_index = 0
 
-    @discord.ui.button(label="", style=discord.ButtonStyle.red, emoji="🎁")
+    @discord.ui.button(label="", style=discord.ButtonStyle.red, emoji="<cle1:1269619584688979978>")
     async def previous_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         self.current_link_index = (self.current_link_index - 1) % len(self.links)
         await self.update_message(interaction)
 
-    @discord.ui.button(label="Next", style=discord.ButtonStyle.green, emoji="🎁")
+    @discord.ui.button(label="", style=discord.ButtonStyle.green, emoji="<cle2:1269619569463394367>")
     async def next_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         self.current_link_index = (self.current_link_index + 1) % len(self.links)
         await self.update_message(interaction)
 
     async def update_message(self, interaction: discord.Interaction):
         link = self.links[self.current_link_index]
-        await interaction.response.edit_message(content=f"Voici le lien : {link}", view=self)
+        await interaction.response.edit_message(content=link, view=self)
 
 async def youtube_search(message):
 
