@@ -19,10 +19,8 @@ from discord.utils import get
 import fonctions as f
 
 from Commandes.duel import duel
-from Commandes.clash import clash
 from Commandes.justeprix import justeprix
 from Commandes.price import price,priceu
-from Commandes.youtube_search import youtube_search
 from swinny.swinny import swinny_collection,swinny_drawings,swinny_musics
 from swinny.hugo import hugo_destinations
 from swinny.jeux import jeux1,jeux2
@@ -126,22 +124,12 @@ async def on_message(message):
 #====================
 
   if message.content.startswith("!clash"):
-    await clash(message)
-
-  """
-  if message.author.id == 172362870439411713 and message.attachments:
-    link = message.attachments[0].url
-
-    response = requests.get(link)
-    img = Image.open(io.BytesIO(response.content))
-    text = pytesseract.image_to_string(img)
-    print(text)
-  """
+    await f.clash(message)
 
 #====================
 
   if message.content.startswith("!ytb"):
-    await youtube_search(message)
+    await f.youtube_search(message)
 
 #====================
 
