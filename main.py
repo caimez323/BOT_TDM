@@ -1,34 +1,34 @@
 import os
 import discord
-
+from discord import app_commands
 import random
 import asyncio
-
-import io
-#import pytesseract
-#import requests
-#from PIL import Image
-#from PIL import ImageFilter
-import datetime
-#pytesseract.pytesseract.tesseract_cmd = "tesseract"
-#os.environ["TESSDATA_PREFIX"] = "/home/runner/.apt/usr/share/tesseract-ocr/4.00/tessdata/"
-
 from dotenv import load_dotenv
-from discord.utils import get
-from discord.ui import Button,View
 
 import fonctions as f
-
 
 intents = discord.Intents.all()
 intents.members = True
 client = discord.Client(intents=intents)
+tree = app_commands.CommandTree(client)
 
+myGuildID = 468724624126115840
+
+@tree.command(
+    name="commandname",
+    description="My first application Command",
+    guild=discord.Object(id=myGuildID)
+)
+
+async def first_command(interaction):
+    await interaction.response.send_message("Hello!")
 
 @client.event
 async def on_ready():
   print('Le bot {0.user} est prêt'.format(client))
-  #await schedule_daily_message()
+
+  #Slash command
+  await tree.sync(guild=discord.Object(id=myGuildID))
 
 
 @client.event
