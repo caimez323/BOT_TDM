@@ -12,6 +12,7 @@ client = discord.Client(intents=intents)
 tree = app_commands.CommandTree(client)
 
 myGuildID = 468724624126115840
+load_dotenv(".env")
 
 @tree.command(
     name="commandname",
@@ -172,6 +173,6 @@ async def on_member_remove(member):
       await channel.edit(name=f'Members: {(member.guild.member_count)-4}')
 
 #==========================================================================
-load_dotenv(".env")
+
 TOKEN=os.getenv("TOKEN")
 client.run(TOKEN)
