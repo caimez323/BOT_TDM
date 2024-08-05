@@ -1,0 +1,10 @@
+# Étape 1 : Utiliser une image Python officielle comme base
+FROM python
+
+RUN apt-get update && apt-get install -y git
+
+WORKDIR /
+
+RUN git submodule update --init --recursive
+
+CMD ["python", "main.py"]
