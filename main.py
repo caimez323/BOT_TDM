@@ -4,7 +4,6 @@ from discord import app_commands
 import random
 import asyncio
 from dotenv import load_dotenv
-os.system("bash start.sh") #load git submdules
 import fonctions as f
 
 intents = discord.Intents.all()
