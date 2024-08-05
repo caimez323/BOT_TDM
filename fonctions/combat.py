@@ -1,6 +1,5 @@
 #====================================COMBAT====================================
 import random
-import numpy as np
 import asyncio
 
 async def combat (message):
@@ -57,4 +56,4 @@ async def combat (message):
     f"Le stratège {winner} a aveuglé son adversaire avec du sable avant de le jeter du haut de la falaise. C'est une victoire écrasante, lol."]
   
   await asyncio.sleep(5)
-  await message.channel.send(np.random.choice(phrases))
+  await message.channel.send(random.choice(phrases))

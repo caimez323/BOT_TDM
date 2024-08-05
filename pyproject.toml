@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "bot-tdm"
+version = "0.1.0"
+description = "Official TDM's bot"
+authors = ["caimez"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+discord = "^2.3.2"
+python-dotenv = "^1.0.1"
+pytube = "^15.0.0"
+firebase-admin = "^6.5.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

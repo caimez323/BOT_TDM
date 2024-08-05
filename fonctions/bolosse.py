@@ -1,5 +1,5 @@
 #====================================BOLOSSE====================================
-import numpy as np
+import random
 import asyncio
 
 async def bolosse(message):
@@ -13,7 +13,7 @@ async def bolosse(message):
       else:
         connectés.append(user.nick)
       
-    choisi = np.random.choice(connectés)
-    emojis = np.random.choice(["<a:95_Pffft:873548369753165824>","<:23_ThisIsFine:873337713141624882>","<:06_SadQuokka:873337529775030302>","<:21_Pika:873337681982148628>"])
+    choisi = random.choice(connectés)
+    emojis = random.choice(["<a:95_Pffft:873548369753165824>","<:23_ThisIsFine:873337713141624882>","<:06_SadQuokka:873337529775030302>","<:21_Pika:873337681982148628>"])
 
     await message.channel.send(f"Le bolosse est : {choisi} {emojis}")
