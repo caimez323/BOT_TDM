@@ -45,9 +45,13 @@ async def on_message(message):
   
   await f.customWords.customW(message)
 
-#============================MESSAGES pour la VX twitter/insta (Clement)==============================
+#============================ VX twitter/insta (Clement)==============================
 
   await f.jvaisVX.main.VXBot(message)
+  
+#============================ SnifSnouf (Clement)==============================
+
+  await f.snifsnouf.main.snifSnoufFct(message)
 
 #===================================ARAM===================================
 
