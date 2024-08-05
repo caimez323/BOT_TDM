@@ -135,7 +135,7 @@ async def leave(ctx):
             os.remove('song.webm')
         elif os.path.exists('song.mp3'):
             os.remove('song.mp3')
-            
+
         if os.path.exists('next_song.webm'):
             os.remove('next_song.webm')
         elif os.path.exists('next_song.mp3'):
@@ -145,4 +145,4 @@ async def leave(ctx):
 async def on_ready():
     print(f'{client.user} est connecté et prêt à l\'utilisation!')
 
-client.run(TOKEN)
+#client.run(TOKEN)
