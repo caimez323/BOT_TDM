@@ -56,6 +56,8 @@ def randomizeur(team_1,team_2):
 #====================
 
 def reroll(message):
+  if len(message.content.split())<2:
+    return ("Merci d'envoyer le nom de la personne à reroll")
   with open("fonctions/ARAM/persos_lol.txt","r") as file:
     Champions_list = [name.replace("\n","") for name in list(file.readlines())]
   pick_reroll1=random.choice(Champions_list)
