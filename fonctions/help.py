@@ -28,7 +28,7 @@ def helpPagesCreation(message):
     #===========================================================
     COMMAND_LIST = {\
         "!duel":"Permet de défier en duel",\
-        "!1" : "1",\
+        "!snifHelp" : "Affiche l'aide de snifSnouf (prefix dependant)",\
         "!2" : "1",\
         "!3" : "1",\
         "!4" : "1",\
