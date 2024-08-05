@@ -1,3 +1,2 @@
-cd fonctions
-git clone -b tdm https://github.com/caimez323/jvaisVX
-git clone -b tdm https://github.com/caimez323/SnifSnouf
+git init
+git submodule update --init --recursive
