@@ -29,12 +29,6 @@ def helpPagesCreation(message):
     COMMAND_LIST = {\
         "!duel":"Permet de défier en duel",\
         "!snifHelp" : "Affiche l'aide de snifSnouf (prefix dependant)",\
-        "!2" : "1",\
-        "!3" : "1",\
-        "!4" : "1",\
-        "!5" : "1",\
-        "!6" : "1",\
-        "!7" : "1",\
         }
 
     COMMAND_LIST = dict(sorted(COMMAND_LIST.items()))
