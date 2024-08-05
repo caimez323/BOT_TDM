@@ -1,6 +1,3 @@
-git submodule update --init --recursive
-
-cd fonctions/jvaisVX
-git checkout tdm
-cd ../snifsnouf
-git checkout tdm
+cd fonctions
+git clone -b tdm https://github.com/caimez323/jvaisVX
+git clone -b tdm https://github.com/caimez323/SnifSnouf
