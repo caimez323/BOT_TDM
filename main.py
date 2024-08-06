@@ -50,7 +50,7 @@ async def on_message(message):
   
 #============================ SnifSnouf (Clement)==============================
 
-  await f.snifsnouf.snifSnoufFct(message)
+  # await f.snifsnouf.snifSnoufFct(message)
 
 #===================================ARAM===================================
 
