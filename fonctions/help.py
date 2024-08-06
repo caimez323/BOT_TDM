@@ -8,12 +8,12 @@ class HelperView(View):
         self.current_page = 0
         self.pages = pages
     
-    @discord.ui.button(label="", style=discord.ButtonStyle.red,emoji="🎁")
+    @discord.ui.button(label="", style=discord.ButtonStyle.gray,emoji="<:240_Amoa:1017107527961424014>")
     async def previous_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         self.current_page = (self.current_page - 1) % len(self.pages)
         await self.update_message(interaction)
     
-    @discord.ui.button(label="", style=discord.ButtonStyle.green,emoji="▶️")
+    @discord.ui.button(label="", style=discord.ButtonStyle.gray,emoji="<:238_Maraiste:1133163882999971991>")
     async def next_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         self.current_page = (self.current_page + 1) % len(self.pages)
         await self.update_message(interaction)
@@ -26,26 +26,97 @@ def helpPagesCreation(message):
     #===========================================================
     # POUR AJOUTER UNE COMMANDE ICI, MERCI DE SUIVRE LA SYNTAXE
     #===========================================================
-    COMMAND_LIST = {\
-        "!duel":"Permet de défier en duel",\
-        "!snifHelp" : "Affiche l'aide de snifSnouf (prefix dependant)",\
-        }
 
+    COMMAND_ARAM = {\
+        "!aram_teamrdm *p1 p2...*": "Créé un matchmaking d'ARAM (équipes aléatoires)",\
+        "!aram_rdm *p1 p2...*": "Créé un matchmaking d'ARAM (équipes dans l'ordre)",\
+        "!reroll *player*": "Choisit 2 nouveaux picks aléatoirement",\
+        "!pick_rdm": "Choisit 1 pick aléatoire",\
+    }
+
+    COMMAND_FIGHT = {\
+        "!duel @adversaire": "Choisit 1 adversaire pour faire un duel",\
+        "!bolosse ": "Choisit 1 bolosse parmi les joueurs du vocal",\
+        "!fight *p1 p2*": "Combat entre 2 personnes",\
+    }
+    
+    COMMAND_COMPOS = {\
+        "!challenges": "Affiche la liste des challenges lol",\
+        "!chall *nom/n° challenge*": "Affiche les conditions du challenge",\
+        "!region *champion*": "Donne la région à laquelle appartient le champion",\
+    }
+
+    COMMAND_MUSIQUE = {\
+        "!join": "Rejoint le channel vocal",\
+        "!leave": "Quitte le channel vocal",\
+        "!play *lien*": "Joue la musique",\
+    }
+
+    COMMAND_CALCULS = {\
+        "!piece": "Lance la pièce pour faire un pile ou face",\
+        "!number_rdm *(min) max*": "Affiche un nombre aléatoire entre min et max (min=1 si non précisé)",\
+        "!justeprix": "Démarre le jeu du juste prix",\
+    }
+
+    COMMAND_RECHERCHE = {\
+        "!w2g": "Affiche le lien du Watch2Gether",\
+        "!pp *nom/id/mention*": "Affiche la photo de profil d'un membre",\
+        "!ytb *titre/lien de la vidéo*": "Affiche les 3 premières vidéos Youtube de la recherche",\
+        "!clash": "En dev",\
+    }
+
+    COMMAND_CUSTOMWORDS = [
+        "hello",
+        "ping",
+        "kebab",
+        "croco",
+        "wéwéwé",
+        "cochon"
+    ]
+        
+    COMMAND_LIST = {\
+        "BLOC_ARAM": COMMAND_ARAM,\
+        "BLOC_FIGHT": COMMAND_FIGHT,\
+        "BLOC_COMPOS": COMMAND_COMPOS,\
+        "BLOC_MUSIQUE": COMMAND_MUSIQUE,\
+        "BLOC_CALCULS": COMMAND_CALCULS,\
+        "BLOC_RECHERCHE": COMMAND_RECHERCHE,\
+        "CUSTOM WORDS": COMMAND_CUSTOMWORDS,\
+    }
+    
     COMMAND_LIST = dict(sorted(COMMAND_LIST.items()))
     #page c'est une liste d'embed
     pages = []
     cReturn = 0  
     thisMBD = None
     for command, desc in COMMAND_LIST.items():
-        if cReturn%5 == 0:
-            if thisMBD:pages.append(thisMBD)
+        if cReturn==0 or cReturn>=10:
             cReturn = 0
-            thisMBD=discord.Embed(title="Help menu", url="https://github.com/caimez323/BOT_TDM", description="List of all the commands", color=0xa24a01)
-            thisMBD.set_footer(text=message.author.name, icon_url=message.author.avatar)
-        thisMBD.add_field(name="",value="**"+command+"** : "+desc,inline=False)
+            thisMBD=discord.Embed(title="", url="", description="", color=0x6d97cd)
+            thisMBD.set_author(name='⚙️ Command List', icon_url=(""))
+            thisMBD.set_footer(text=f"{message.author.name} - page {len(pages) +1}/total", icon_url=message.author.avatar)
+        if command.startswith("BLOC_"):
+            block_name = command.split("_", 1)[1]
+            block_dict = desc
+            block_fulldesc = ""
+            for block_command, block_desc in block_dict.items():
+                block_fulldesc += f"**{block_command}** : {block_desc}\n"
+                cReturn += 1
+            thisMBD.add_field(name=f"**\n{block_name}**", value=block_fulldesc, inline=False)
+        elif command == "CUSTOM WORDS":
+            custom_words_str = ", ".join(desc)
+            thisMBD.add_field(name=f"**\n{command}**", value=custom_words_str, inline=False)        
+            cReturn += 1
+        else:
+            thisMBD.add_field(name="", value=f"**{command}** : {desc}", inline=False)
         cReturn += 1
-    if cReturn%5 != 0:
-        pages.append(thisMBD)
+        if cReturn>=10:
+            thisMBD.add_field(name=f"", value="\u200b", inline=False)        
+            pages.append(thisMBD)
+    thisMBD.add_field(name=f"", value="\u200b", inline=False)        
+    pages.append(thisMBD)
+    for i, page in enumerate(pages):
+        page.set_footer(text=f"{message.author.name} - Page {i + 1}/{len(pages)}", icon_url=message.author.avatar)
     return pages
 
 

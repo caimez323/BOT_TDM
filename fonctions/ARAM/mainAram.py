@@ -6,8 +6,8 @@ import random
 def aram_maker(message):
   teamType = message.content.split()[0].replace("!aram_","")
   
-  if teamType not in ["random","teamrandom"]:
-    return "Merci de choisir un type de team valide : random ou teamrandom"
+  if teamType not in ["rdm","teamrdm"]:
+    return "Merci de choisir un type de team valide : rdm ou teamrdm"
 
   playersList = message.content.split()[1:]
   nbrJoueurs = len(playersList)
@@ -15,7 +15,7 @@ def aram_maker(message):
   if nbrJoueurs %2 != 0 :
     return "Merci de mettre un nombre pair de joueur"
   
-  if teamType == "teamrandom":
+  if teamType == "teamrdm":
     random.shuffle(playersList)
     
   mid = int(nbrJoueurs/2)
@@ -23,7 +23,6 @@ def aram_maker(message):
   team_2 = playersList[mid:]
 
   return randomizeur(team_1,team_2)
-
 
 #====randomizeur
 
@@ -70,7 +69,7 @@ def reroll(message):
 
 #====================
 
-def random_pick():
+def pick_rdm():
   with open("fonctions/ARAM/persos_lol.txt","r") as file:
     Champions_list = [name.replace("\n","") for name in list(file.readlines())]
     return("```──────────────────────────────────────────────\nChampion : "+random.choice(Champions_list)+"\n──────────────────────────────────────────────```")

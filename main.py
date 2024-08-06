@@ -61,8 +61,19 @@ async def on_message(message):
   if message.content.startswith("!reroll"):
     await message.channel.send(f.ARAM.mainAram.reroll(message))
 
-  if message.content.startswith("!random_pick"):
-    await message.channel.send(f.ARAM.mainAram.random_pick())   
+  if message.content.startswith("!pick_rdm"):
+    await message.channel.send(f.ARAM.mainAram.pick_rdm())   
+
+#===================================FIGHT===================================
+
+  if message.content.lower() == "!bolosse":
+    await f.bolosse(message)
+
+  if message.content.startswith("!fight"):
+    await f.fight(message)
+    
+  if message.content.startswith("!duel"):
+    await f.duel(message,client)
 
 #===================================COMPOS===================================
 
@@ -72,7 +83,7 @@ async def on_message(message):
   if message.content.startswith("!chall") or message.content.startswith("!comp") or message.content.startswith("!region") or message.content.startswith("!région"):
     await f.COMPO.compos.challenges_images(message)
 
-  if message.content.startswith("!champ"):
+  if message.content.startswith("!region"):
     await f.COMPO.compos.challenges_champ(message)
     
 #=================================COMMANDES=================================
@@ -86,15 +97,6 @@ async def on_message(message):
     await message.channel.send("https://w2g.tv/rooms/yangoo-dnd4zxj3huxhxuj1uq?lang=fr")
 
 #====================
-  if message.content.lower() == "!bolosse":
-    await f.bolosse(message)
-
-#====================
-
-  if message.content.startswith("!combat"):
-    await f.combat(message)
-    
-#====================
 
   if message.content.startswith("!piece"):
     await message.channel.send("Lancement de la pièce...")
@@ -103,7 +105,7 @@ async def on_message(message):
 
 #====================
 
-  if message.content.startswith("!random_number"):
+  if message.content.startswith("!number_rdm"):
     await f.random_number(message)
 
 #====================
@@ -134,11 +136,6 @@ async def on_message(message):
 
   if message.content.lower() == "!justeprix":
     await f.justeprix(message,client)
-
-#====================    
-
-  if message.content.startswith("!duel"):
-    await f.duel(message,client)
 
 #=================================MUSIQUE================================= 
 #!TODO ?
