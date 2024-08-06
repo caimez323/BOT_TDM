@@ -8,8 +8,10 @@ ydl_opts = {
     'format': 'bestaudio/best',
     'noplaylist': True,
     'quiet': True,
-    'extract_flat': 'in_playlist'
+    'extract_flat': 'in_playlist',
+    'continuedl': False,
 }
+
 
 ydl = yt_dlp.YoutubeDL(ydl_opts)
 
@@ -65,7 +67,7 @@ async def play_next(message):
         return  # Pas de musique à jouer
 
     source = discord.FFmpegPCMAudio(downloaded_file)
-    message.guild.voice_client.play(source, after=lambda e: asyncio.run_coroutine_threadsafe(cleanup(message, downloaded_file), client.loop))
+    message.guild.voice_client.play(source, after=lambda e: asyncio.run_coroutine_threadsafe(cleanup(message, downloaded_file), message.client.loop))
     await message.channel.send(f"Lecture de: **{info['title']}**")
 
     if len(music_queue) > 0:
