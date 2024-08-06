@@ -3,7 +3,6 @@ import yt_dlp
 import os
 import asyncio
 
-
 ydl_opts = {
     'format': 'bestaudio/best',
     'noplaylist': True,
@@ -11,7 +10,6 @@ ydl_opts = {
     'extract_flat': 'in_playlist',
     'continuedl': False,
 }
-
 
 ydl = yt_dlp.YoutubeDL(ydl_opts)
 
@@ -23,10 +21,13 @@ async def join_channel(message):
     if message.author.voice:
         channel = message.author.voice.channel
         await channel.connect()
+        await message.channel.send(f"Connecté au canal vocal: {channel.name}")
     else:
         await message.channel.send("Tu dois être dans un canal vocal pour utiliser cette commande.")
 
 async def play_music(message, search: str):
+    global next_music_file
+
     if not message.guild.voice_client:
         await message.channel.send("Je ne suis pas connecté à un canal vocal.")
         return
@@ -35,15 +36,34 @@ async def play_music(message, search: str):
         info = ydl.extract_info(f"ytsearch:{search}", download=False)
         if 'entries' in info and len(info['entries']) > 0:
             music_info = info['entries'][0]
-            music_queue.append(music_info)  # Ajouter la musique à la file d'attente
-            await message.channel.send(f"Ajouté à la file d'attente: **{music_info['title']}**")
-            
-            if not message.guild.voice_client.is_playing():
-                await play_next(message)  # Jouer la prochaine musique dans la file si rien n'est en cours
-            elif len(music_queue) == 1:
-                await predownload_next()  # Précharger la prochaine musique si elle est la seule dans la file
+
+            if not message.guild.voice_client.is_playing() and len(music_queue) == 0:
+                music_queue.append(music_info)  # Ajouter la musique à la file d'attente
+                await download_and_play(message, music_info)  # Télécharger et jouer la musique
+            else:
+                music_queue.append(music_info)  # Ajouter la musique à la file d'attente
+                await message.channel.send(f"Ajouté à la file d'attente: **{music_info['title']}**")
+
+            if len(music_queue) == 1:  # Si c'est la seule musique dans la file, précharger la suivante
+                await predownload_next()
         else:
             await message.channel.send("Aucun résultat trouvé pour la recherche.")
+
+async def download_and_play(message, music_info):
+    url = music_info['url']
+    downloaded_file = "song.mp3"
+    
+    ydl_opts_download = {
+        'format': 'bestaudio/best',
+        'outtmpl': downloaded_file
+    }
+    
+    with yt_dlp.YoutubeDL(ydl_opts_download) as ydl_download:
+        ydl_download.download([url])
+    
+    source = discord.FFmpegPCMAudio(downloaded_file)
+    message.guild.voice_client.play(source, after=lambda e: asyncio.create_task(cleanup(message, downloaded_file)))
+    await message.channel.send(f"Lecture de: **{music_info['title']}**")
 
 async def play_next(message):
     global next_music_file
@@ -57,18 +77,18 @@ async def play_next(message):
 
         ydl_opts_download = {
             'format': 'bestaudio/best',
-            'outtmpl': 'song.%(ext)s'
+            'outtmpl': 'song.mp3'
         }
         with yt_dlp.YoutubeDL(ydl_opts_download) as ydl_download:
             ydl_download.download([url])
 
-        downloaded_file = "song.webm" if os.path.exists("song.webm") else "song.mp3"
+        downloaded_file = "song.mp3"
+        await message.channel.send(f"Lecture de: **{info['title']}**")
     else:
         return  # Pas de musique à jouer
 
     source = discord.FFmpegPCMAudio(downloaded_file)
-    message.guild.voice_client.play(source, after=lambda e: asyncio.run_coroutine_threadsafe(cleanup(message, downloaded_file), message.client.loop))
-    await message.channel.send(f"Lecture de: **{info['title']}**")
+    message.guild.voice_client.play(source, after=lambda e: asyncio.create_task(cleanup(message, downloaded_file)))
 
     if len(music_queue) > 0:
         await predownload_next()  # Précharger la musique suivante en arrière-plan
@@ -82,12 +102,12 @@ async def predownload_next():
 
         ydl_opts_download = {
             'format': 'bestaudio/best',
-            'outtmpl': 'next_song.%(ext)s'
+            'outtmpl': 'next_song.mp3'
         }
         with yt_dlp.YoutubeDL(ydl_opts_download) as ydl_download:
             ydl_download.download([url])
 
-        next_music_file = "next_song.webm" if os.path.exists("next_song.webm") else "next_song.mp3"
+        next_music_file = "next_song.mp3"
 
 async def cleanup(message, file):
     try:
@@ -114,23 +134,16 @@ async def leave_channel(message):
         await message.guild.voice_client.disconnect()
 
         # Supprimer les fichiers audio restants
-        if os.path.exists('song.webm'):
-            os.remove('song.webm')
-        elif os.path.exists('song.mp3'):
-            os.remove('song.mp3')
+        for file in ['song.mp3', 'next_song.mp3']:
+            if os.path.exists(file):
+                os.remove(file)
 
-        if os.path.exists('next_song.webm'):
-            os.remove('next_song.webm')
-        elif os.path.exists('next_song.mp3'):
-            os.remove('next_song.mp3')
-
-#Entry point
+# Entry point
 async def music(message):
     if message.content.startswith('!join'):
         await join_channel(message)
     elif message.content.startswith('!play'):
-        search_query = message.content[len('!play '):]
-        await play_music(message, search_query)
+        await play_music(message, message.content[len('!play '):])
     elif message.content.startswith('!skip'):
         await skip_music(message)
     elif message.content.startswith('!leave'):
