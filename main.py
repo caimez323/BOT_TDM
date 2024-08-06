@@ -42,15 +42,19 @@ async def on_message(message):
 
 #=================================MESSAGES Divers=================================
   
-  await f.customWords.customW(message)
+  await f.customWords(message)
 
 #============================ VX twitter/insta (Clement)==============================
 
-  await f.jvaisVX.VXBot(message)
+  await f.jvaisVX(message)
   
 #============================ SnifSnouf (Clement)==============================
 
   # await f.snifsnouf.snifSnoufFct(message)
+
+#============================ MUSIQUE ==============================
+
+  await f.music(message)
 
 #===================================ARAM===================================
 

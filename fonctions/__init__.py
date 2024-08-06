@@ -1,6 +1,6 @@
 from .bolosse import bolosse
 from .combat import combat
-from .customWords import customW
+from .customWords import customWords
 from .ARAM import mainAram
 from .COMPO import compos
 from .random_number import random_number
@@ -9,6 +9,6 @@ from .youtube_search import youtube_search
 from .justeprix import justeprix
 from .duel import duel
 from .help import help
-#from .music import music
-from .snifsnouf import snifSnoufFct
-from .jvaisVX import VXBot
+from .music import music
+from .snifsnouf import snifsnouf
+from .jvaisVX import jvaisVX

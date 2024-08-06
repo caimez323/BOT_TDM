@@ -1,5 +1,5 @@
 import random
-async def customW(message):
+async def customWords(message):
   if message.content.lower() == "hello" or message.content.lower() == "salut":
     await message.channel.send("Hello! <:05_CuteQuokka:873337522174959626>")
 

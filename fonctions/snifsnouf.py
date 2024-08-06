@@ -52,7 +52,7 @@ def createBat(currList):
 
 
 
-async def snifSnoufFct(message):
+async def snifsnouf(message):
 
     mainList = ref.get()
     if message.content == bot_prefix+'list': # Affiche la liste en clair
