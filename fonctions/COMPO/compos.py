@@ -19,6 +19,10 @@ async def challenges(message):
 
 
 async def challenges_images(message):
+  
+  if len(message.content.split())<2:
+    await message.channel.send("Merci d'ajouter un chall")
+    return
   chall = message.content.split()[1]
 
   embed = discord.Embed(title = "", 
@@ -117,6 +121,9 @@ async def challenges_images(message):
 
 async def challenges_champ(message):
   rien = False
+  if len(message.content.split())<2:
+    await message.channel.send("Merci d'ajouter un chall")
+    return
   chall = message.content.split()[1]
   if chall.lower() == "lulu" or chall.lower() == "rumble" or chall.lower() == "teemo" or chall.lower() == "tristana" or chall.lower() == "veigar" or chall.lower() == "vex" or chall.lower() == "yuumi":
       region = "à **Bandle**"

@@ -2,7 +2,7 @@
 import random
 import asyncio
 
-async def combat (message):
+async def fight(message):
   if len(message.content.split()) == 3:
     await message.channel.send("Merci de mettre 2 combattants !")
     return

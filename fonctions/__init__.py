@@ -1,5 +1,5 @@
 from .bolosse import bolosse
-from .combat import combat
+from .fight import fight
 from .customWords import customWords
 from .ARAM import mainAram
 from .COMPO import compos
