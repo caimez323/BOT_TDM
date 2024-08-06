@@ -46,11 +46,11 @@ async def on_message(message):
 
 #============================ VX twitter/insta (Clement)==============================
 
-  await f.jvaisVX.main.VXBot(message)
+  await f.jvaisVX.VXBot(message)
   
 #============================ SnifSnouf (Clement)==============================
 
-  # await f.snifsnouf.main.snifSnoufFct(message)
+  await f.snifsnouf.snifSnoufFct(message)
 
 #===================================ARAM===================================
 
