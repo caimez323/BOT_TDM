@@ -1,6 +1,6 @@
 
 reputation_dict = {}
-bot_prefix = "§"
+bot_prefix = "!"
 
 async def VXBot(message):
 
