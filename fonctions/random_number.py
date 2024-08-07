@@ -37,7 +37,6 @@ async def random_number(message):
       await message.channel.send("La valeur min doit être **inférieure** à la valeur max")
     min,max = int(val1),int(val2)
 
-  print(min)
   choix = random.choice(range(1, max+1)) if min == None else random.choice(range(min,max+1))
   await message.channel.send("Lancement de la roulette...")
   await asyncio.sleep(3)
