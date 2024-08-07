@@ -28,41 +28,51 @@ def helpPagesCreation(message):
     #===========================================================
 
     COMMAND_ARAM = {\
-        "!aram_teamrdm *p1 p2...*": "Créé un matchmaking d'ARAM (équipes aléatoires)",\
-        "!aram_rdm *p1 p2...*": "Créé un matchmaking d'ARAM (équipes dans l'ordre)",\
-        "!reroll *player*": "Choisit 2 nouveaux picks aléatoirement",\
-        "!pick_rdm": "Choisit 1 pick aléatoire",\
+        "!aram_teamrdm *p1 p2...*": "créé un matchmaking d'ARAM (équipes aléatoires)",\
+        "!aram_rdm *p1 p2...*": "créé un matchmaking d'ARAM (équipes dans l'ordre)",\
+        "!reroll *player*": "choisit 2 nouveaux picks aléatoirement",\
+        "!pick_rdm": "choisit 1 pick aléatoire",\
     }
 
     COMMAND_FIGHT = {\
-        "!duel @adversaire": "Choisit 1 adversaire pour faire un duel",\
-        "!bolosse ": "Choisit 1 bolosse parmi les joueurs du vocal",\
-        "!fight *p1 p2*": "Combat entre 2 personnes",\
+        "!duel @adversaire": "choisit 1 adversaire pour faire un duel",\
+        "!bolosse ": "choisit 1 bolosse parmi les joueurs du vocal",\
+        "!fight *p1 p2*": "combat entre 2 personnes",\
     }
     
     COMMAND_COMPOS = {\
-        "!challenges": "Affiche la liste des challenges lol",\
-        "!chall *nom/n° challenge*": "Affiche les conditions du challenge",\
-        "!region *champion*": "Donne la région à laquelle appartient le champion",\
+        "!challenges": "affiche la liste des challenges lol",\
+        "!chall *nom/n° challenge*": "affiche les conditions du challenge",\
+        "!region *champion*": "donne la région à laquelle appartient le champion",\
     }
 
     COMMAND_MUSIQUE = {\
-        "!join": "Rejoint le channel vocal",\
-        "!leave": "Quitte le channel vocal",\
-        "!play *lien*": "Joue la musique",\
+        "!join": "rejoindre le channel vocal",\
+        "!leave": "quitter le channel vocal",\
+        "!play *lien*": "jouer la musique",\
+        "!skip": "passer la musique",\
     }
 
     COMMAND_CALCULS = {\
-        "!piece": "Lance la pièce pour faire un pile ou face",\
-        "!number_rdm *(min) max*": "Affiche un nombre aléatoire entre min et max (min=1 si non précisé)",\
-        "!justeprix": "Démarre le jeu du juste prix",\
+        "!piece": "lance la pièce pour faire un pile ou face",\
+        "!number_rdm *(min) max*": "affiche un nombre aléatoire en fonction des bornes",\
+        "!justeprix": "démarre le jeu du juste prix",\
     }
 
     COMMAND_RECHERCHE = {\
-        "!w2g": "Affiche le lien du Watch2Gether",\
-        "!pp *nom/id/mention*": "Affiche la photo de profil d'un membre",\
-        "!ytb *titre/lien de la vidéo*": "Affiche les 3 premières vidéos Youtube de la recherche",\
-        "!clash": "En dev",\
+        "!w2g": "affiche le lien du Watch2Gether",\
+        "!pp *nom/id/mention*": "affiche la photo de profil d'un membre",\
+        "!ytb *titre/lien de la vidéo*": "affiche les 3 premières vidéos Youtube de la recherche",\
+        "!clash": "en développement",\
+    }
+    
+    COMMAND_SNIFSNOUF = {\
+        "!list": "affiche la liste des créateurs déjà enregistrés",\
+        "!addList": "ajoute un créateur à la liste",\
+        "!webList": "affiche le site web",\
+        "!macro ": "génère une macro téléchargeable pour tout ouvrir d'un coup",\
+        "!iwu": "vérifie si la database est syncro avec le snifSnouf",\
+        "!dataSync ": "syncronisation de la database avec le snifsnouf",\
     }
 
     COMMAND_CUSTOMWORDS = [
@@ -78,9 +88,10 @@ def helpPagesCreation(message):
         "BLOC_ARAM": COMMAND_ARAM,\
         "BLOC_FIGHT": COMMAND_FIGHT,\
         "BLOC_COMPOS": COMMAND_COMPOS,\
-        "BLOC_MUSIQUE": COMMAND_MUSIQUE,\
+        "BLOC_MUSIQUE (en développement)": COMMAND_MUSIQUE,\
         "BLOC_CALCULS": COMMAND_CALCULS,\
         "BLOC_RECHERCHE": COMMAND_RECHERCHE,\
+        "BLOC_SNIFSNOUF (en développement)": COMMAND_SNIFSNOUF,\
         "CUSTOM WORDS": COMMAND_CUSTOMWORDS,\
     }
     
