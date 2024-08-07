@@ -37,27 +37,27 @@ async def on_message(message):
   if message.author == client.user:
     return
 
-#=================================HELP=================================
+#============================ HELP              ==============================
   if message.content.startswith("!help"):
     await f.help(message)
 
-#=================================MESSAGES Divers=================================
+#============================ MESSAGES Divers   ==============================
   
   await f.customWords(message)
 
-#============================ VX twitter/insta (Clement)==============================
+#============================ VX twitter/insta  ==============================
 
   await f.jvaisVX(message)
   
-#============================ SnifSnouf (Clement)==============================
+#============================ SnifSnouf         ==============================
 
   await f.snifsnouf(message)
 
-#============================ MUSIQUE ==============================
+#============================ MUSIQUE           ==============================
 
   await f.music(message)
 
-#===================================ARAM===================================
+#=========================== ARAM               ==============================
 
   if message.content.startswith("!aram_"):
     await message.channel.send(f.ARAM.mainAram.aram_maker(message))
