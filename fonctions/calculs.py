@@ -12,14 +12,10 @@ async def roulette(message):
         msg = await message.channel.send("La personne sélectionnée est : ")
         await asyncio.sleep(0.1)
         end_time = asyncio.get_event_loop().time() + random.uniform(5, 10)
-        print (end_time)
         while asyncio.get_event_loop().time() < end_time:
             await asyncio.sleep(0.1)
-            print (asyncio.get_event_loop().time())
-            print("encore")
             index = random.randint(0, len(concurrents) - 1)
             await msg.edit(content="La personne sélectionnée est : " + concurrents[index])
-        print("fin")
         await msg.edit(content=f"La personne sélectionnée est : **{concurrents[index]}** ! 🥳")
 
 #===============

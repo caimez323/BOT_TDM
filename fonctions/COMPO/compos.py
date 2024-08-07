@@ -31,9 +31,8 @@ async def challenges_images(message): # Detail
   embed = discord.Embed(title = "", 
   description = "", 
   colour = discord.Colour.dark_teal())
-
   embed.set_author(name='Challenges', icon_url=("https://cdn.discordapp.com/attachments/888765508042768445/991727218176839710/lol.jpg"))
-
+  file = None
   if chall == "1" or chall == "ultimes" or chall == "Ultimes":
     embed.add_field(name='Ultimes ultimes', value="Gagnez avec un groupe de 5, avec 3+ __ultimes à large zone d'effet__", inline=False)
     embed.set_image(url='https://bit.ly/3a39J6M')
@@ -71,8 +70,9 @@ async def challenges_images(message): # Detail
     embed.add_field(name='Équipe homogène', value="Gagnez avec un groupe de 5 champions __d'une même classe__", inline=False)
     embed.set_image(url='https://bit.ly/3I9mQzV')
   elif chall == "13" or chall.lower() == "bandle":
-    embed.add_field(name='5 sur 5', value="Gagnez avec un groupe de 5 __champions de Bandle__", inline=False)
-    embed.set_image(url='./resources/bandle.JPG')
+    embed = discord.Embed(title = "5 sur 5", description = "Gagnez avec un groupe de 5 __champions de Bandle__", colour = discord.Colour.dark_teal())
+    file = discord.File("fonctions/COMPO/resources/bandle.JPG", filename="bandle.JPG")
+    embed.set_image(url='attachment://bandle.JPG')
   elif chall == "14" or chall.lower() == "bilgewater":
     embed.add_field(name='Naufrageurs', value="Gagnez avec un groupe de 5 __champions de Bilgewater__", inline=False)
     embed.set_image(url='https://bit.ly/bilgewater01')
@@ -112,13 +112,10 @@ async def challenges_images(message): # Detail
     
   else:
     await message.channel.send("Ce challenge ne fait pas partie de la liste :")
-    await asyncio.sleep(1)
     await challenges(message)
     return
 
-  embed.set_footer(text=message.author.name, icon_url=message.author.avatar)
-
-  await message.channel.send(embed=embed)
+  await message.channel.send(embed=embed,file=file)
 
 #===============
 
@@ -178,7 +175,6 @@ async def challenges_champ(message):
   else:
      await message.channel.send(f"**{chall}** n'appartient à **aucune** région.")
 
-#===============
 #===============
 
 async def compos(message):
