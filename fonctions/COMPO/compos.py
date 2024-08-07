@@ -3,7 +3,7 @@ import asyncio
 
 #===============
 
-async def challenges(message):
+async def challenges(message): # Tout
   embed = discord.Embed(title = "", 
   description = " ", 
   colour = discord.Colour.green())
@@ -12,7 +12,7 @@ async def challenges(message):
 
   embed.add_field(name='**\n• Champions Compos**', value="\n**1.** [Ultimes ultimes](https://bit.ly/3a39J6M)\n**2.** [Mais tu vas mourir oui ?!](https://bit.ly/3OLoARS)\n**3.** [Nulle part où se cacher](https://bit.ly/3y3HrRI)\n**4.** [Gardons nos distances](https://bit.ly/3udGjcT)\n**5.** [Viens par ici !](https://bit.ly/3y3Ne9Q)\n**6.** [On ne bouge plus](https://bit.ly/3y4PqOj)\n**7.** [Protection rapprochée](https://bit.ly/3nnPNi9)\n**8.** [C'est un piège !](https://bit.ly/3OR1SrL)\n**9.** [Où ils sont passés ?](https://bit.ly/3QXqQYj)\n**10.** [Les invocateurs de la Faille](https://bit.ly/3y19am1)\n**11.** [Et le terrain fut](https://bit.ly/3u9yJ3e)\n**12.** [Équipe homogène](https://bit.ly/3I9mQzV)",  inline=False)
 
-  embed.add_field(name='**\n• Champions Régions**', value='\n**1.** [Bandle](https://bit.ly/3OQU4pX)\n**2.** [Bilgewater](https://bit.ly/bilgewater01)\n**3.** [Demacia](https://bit.ly/3npguTs)\n**4.** [Freljord](https://bit.ly/3ytZYYA)\n**5.** [Ionia](https://bit.ly/3ubJrGr)\n**6.** [Ixtal](https://bit.ly/ixtal01)\n**7.** [Noxus](https://bit.ly/3y4ZXsL)\n**8.** [Piltover](https://bit.ly/3OvfxVy)\n**9.** [îles Obscures](https://bit.ly/3nq2d8W)\n**10.** [Shurima](https://bit.ly/shurima01)\n**11.** [Targon](https://bit.ly/3OyQxg6)\n**12.** [Néant](https://bit.ly/3QXJZti)\n**13.** [Zaun](https://bit.ly/3OPJXlk)', 
+  embed.add_field(name='**\n• Champions Régions**', value='\n**13.** [Bandle](https://bit.ly/3OQU4pX)\n**14.** [Bilgewater](https://bit.ly/bilgewater01)\n**15.** [Demacia](https://bit.ly/3npguTs)\n**16.** [Freljord](https://bit.ly/3ytZYYA)\n**17.** [Ionia](https://bit.ly/3ubJrGr)\n**18.** [Ixtal](https://bit.ly/ixtal01)\n**19.** [Noxus](https://bit.ly/3y4ZXsL)\n**20.** [Piltover](https://bit.ly/3OvfxVy)\n**21.** [îles Obscures](https://bit.ly/3nq2d8W)\n**22.** [Shurima](https://bit.ly/shurima01)\n**23.** [Targon](https://bit.ly/3OyQxg6)\n**24.** [Néant](https://bit.ly/3QXJZti)\n**25.** [Zaun](https://bit.ly/3OPJXlk)', 
   inline=False)
 
   embed.set_footer(text=message.author.name, icon_url=message.author.avatar)
@@ -21,7 +21,7 @@ async def challenges(message):
 
 #===============
 
-async def challenges_images(message):
+async def challenges_images(message): # Detail
   
   if len(message.content.split())<2:
     await message.channel.send("Merci d'ajouter un chall")
@@ -34,80 +34,79 @@ async def challenges_images(message):
 
   embed.set_author(name='Challenges', icon_url=("https://cdn.discordapp.com/attachments/888765508042768445/991727218176839710/lol.jpg"))
 
-  if chall == "1a" or chall == "ultimes" or chall == "Ultimes":
+  if chall == "1" or chall == "ultimes" or chall == "Ultimes":
     embed.add_field(name='Ultimes ultimes', value="Gagnez avec un groupe de 5, avec 3+ __ultimes à large zone d'effet__", inline=False)
     embed.set_image(url='https://bit.ly/3a39J6M')
-  elif chall == "2a" or chall == "réanimations" or chall == "Réanimations":
+  elif chall == "2" or chall == "réanimations" or chall == "Réanimations":
     embed.add_field(name='Mais tu vas mourir oui ?!', value="Gagnez avec un groupe de 5, avec 3+ __réanimations__", inline=False)
     embed.set_image(url='https://bit.ly/3OLoARS')
-  elif chall == "3a" or chall == "compétences" or chall == "Compétences" or chall == "globales" or chall == "Globales":
+  elif chall == "3" or chall == "compétences" or chall == "Compétences" or chall == "globales" or chall == "Globales":
     embed.add_field(name='Nulle part où se cacher', value="Gagnez avec un groupe de 5, avec 3+ __compétences globales__", inline=False)
     embed.set_image(url='https://bit.ly/3y3HrRI')
-  elif chall == "4a" or chall == "poke" or chall == "Poke":
+  elif chall == "4" or chall == "poke" or chall == "Poke":
     embed.add_field(name='Gardons nos distances', value="Gagnez avec un groupe de 5, avec 3+ __champions qui \"pokent\"__", inline=False)
     embed.set_image(url='https://bit.ly/3udGjcT')
-  elif chall == "5a" or chall == "cc" or chall == "CC":
+  elif chall == "5" or chall == "cc" or chall == "CC":
     embed.add_field(name='Viens par ici !', value="Gagnez avec un groupe de 5, avec 3+ __effets de déplacement des ennemis__", inline=False)
     embed.set_image(url='https://bit.ly/3y3Ne9Q')
-  elif chall == "6a" or chall == "immobilisations" or chall == "Immobilisations" or chall == "stun" or chall == "Stun":
+  elif chall == "6" or chall == "immobilisations" or chall == "Immobilisations" or chall == "stun" or chall == "Stun":
     embed.add_field(name='On ne bouge plus', value="Gagnez avec un groupe de 5, avec 3+ __champions qui ont 2+ immobilisations__", inline=False)
     embed.set_image(url='https://bit.ly/3y4PqOj')
-  elif chall == "7a" or chall == "boucliers" or chall == "Boucliers" or chall == "soins" or chall == "Soins":
+  elif chall == "7" or chall == "boucliers" or chall == "Boucliers" or chall == "soins" or chall == "Soins":
     embed.add_field(name='Protection rapprochée', value="Gagnez avec un groupe de 5, avec 3+ __champions à boucliers ou soins__", inline=False)
     embed.set_image(url='https://bit.ly/3nnPNi9')
-  elif chall == "8a" or chall == "pièges" or chall == "Pièges":
+  elif chall == "8" or chall == "pièges" or chall == "Pièges":
     embed.add_field(name="C'est un piège !", value="Gagnez avec un groupe de 5, avec 3+ __pièges__", inline=False)
     embed.set_image(url='https://bit.ly/3OR1SrL')
-  elif chall == "9a" or chall == "furtifs" or chall == "Furtifs" or chall == "invisibles" or chall == "Invisibles":
+  elif chall == "9" or chall == "furtifs" or chall == "Furtifs" or chall == "invisibles" or chall == "Invisibles":
     embed.add_field(name='Où ils sont passés ?', value="Gagnez avec un groupe de 5, avec 3+ __champions furtifs__", inline=False)
     embed.set_image(url='https://bit.ly/3QXqQYj')
-  elif chall == "10a" or chall == "invocations" or chall == "Invocations" or chall == "familiers" or chall == "Familiers":
+  elif chall == "10" or chall == "invocations" or chall == "Invocations" or chall == "familiers" or chall == "Familiers":
     embed.add_field(name='Les invocateurs de la Faille', value="Gagnez avec un groupe de 5, avec 5 __champions à invocations ou familiers__", inline=False)
     embed.set_image(url='https://bit.ly/3y19am1')
-  elif chall == "11a" or chall == "créateurs" or chall == "Créateurs" or chall == "terrain" or chall == "Terrain":
+  elif chall == "11" or chall == "créateurs" or chall == "Créateurs" or chall == "terrain" or chall == "Terrain":
     embed.add_field(name='Et le terrain fut', value="Gagnez avec un groupe de 5, avec 3+ __créateurs de terrain__", inline=False)
     embed.set_image(url='https://bit.ly/3u9yJ3e')
-  elif chall == "12a" or chall == "classe" or chall == "Classe" or chall.lower == "homogène" or chall == "Homogène":
+  elif chall == "12" or chall == "classe" or chall == "Classe" or chall.lower == "homogène" or chall == "Homogène":
     embed.add_field(name='Équipe homogène', value="Gagnez avec un groupe de 5 champions __d'une même classe__", inline=False)
     embed.set_image(url='https://bit.ly/3I9mQzV')
-  elif chall == "1b" or chall.lower() == "bandle":
-    await message.channel.send("oui")
+  elif chall == "13" or chall.lower() == "bandle":
     embed.add_field(name='5 sur 5', value="Gagnez avec un groupe de 5 __champions de Bandle__", inline=False)
-    embed.set_image(url='https://bit.ly/3OQU4pX')
-  elif chall == "2b" or chall.lower() == "bilgewater":
+    embed.set_image(url='./resources/bandle.JPG')
+  elif chall == "14" or chall.lower() == "bilgewater":
     embed.add_field(name='Naufrageurs', value="Gagnez avec un groupe de 5 __champions de Bilgewater__", inline=False)
     embed.set_image(url='https://bit.ly/bilgewater01')
-  elif chall == "3b" or chall.lower() == "demacia":
+  elif chall == "15" or chall.lower() == "demacia":
     embed.add_field(name='POUR DEMACIA', value="Gagnez avec un groupe de 5 __champions de Demacia__", inline=False)
     embed.set_image(url='https://bit.ly/3npguTs')
-  elif chall == "4b" or chall.lower() == "freljord":
+  elif chall == "16" or chall.lower() == "freljord":
     embed.add_field(name='Premiers de la glace', value="Gagnez avec un groupe de 5 __champions de Freljord__", inline=False)
     embed.set_image(url='https://bit.ly/3ytZYYA')
-  elif chall == "5b" or chall.lower() == "ionia":
+  elif chall == "17" or chall.lower() == "ionia":
     embed.add_field(name="Tendez l'autre Wuju", value="Gagnez avec un groupe de 5 __champions d'Ionia__", inline=False)
     embed.set_image(url='https://bit.ly/3ubJrGr')
-  elif chall == "6b" or chall.lower() == "ixtal":
+  elif chall == "18" or chall.lower() == "ixtal":
     embed.add_field(name='Terrible jungle', value="Gagnez avec un groupe de 5 __champions d'Ixtal'__", inline=False)
     embed.set_image(url='https://bit.ly/ixtal01')
-  elif chall == "7b" or chall.lower() == "noxus":
+  elif chall == "19" or chall.lower() == "noxus":
     embed.add_field(name='La force avant tout', value="Gagnez avec un groupe de 5 __champions de Noxus__", inline=False)
     embed.set_image(url='https://bit.ly/3y4ZXsL')
-  elif chall == "8b" or chall.lower() == "piltover":
+  elif chall == "20" or chall.lower() == "piltover":
     embed.add_field(name="Innovateurs", value="Gagnez avec un groupe de 5 __champions de Piltover__", inline=False)
     embed.set_image(url='https://bit.ly/3OvfxVy')
-  elif chall == "9b" or chall.lower() == "îles" or chall.lower() == "iles":
+  elif chall == "21" or chall.lower() == "îles" or chall.lower() == "iles":
     embed.add_field(name='Terreurs des îles', value="Gagnez avec un groupe de 5 __champions des Îles obscures__", inline=False)
     embed.set_image(url='https://bit.ly/3nq2d8W')
-  elif chall == "10b" or chall.lower() == "shurima":
+  elif chall == "22" or chall.lower() == "shurima":
     embed.add_field(name='Artistes shurimartiaux', value="Gagnez avec un groupe de 5 __champions de Shurima__", inline=False)
     embed.set_image(url='https://bit.ly/shurima01')
-  elif chall == "11b" or chall.lower() == "targon":
+  elif chall == "23" or chall.lower() == "targon":
     embed.add_field(name='Maîtres de la montagne', value="Gagnez avec un groupe de 5 __champions de Targon__", inline=False)
     embed.set_image(url='https://bit.ly/3OyQxg6')
-  elif chall == "12b" or chall.lower() == "néant" or chall.lower() == "neant":
+  elif chall == "24" or chall.lower() == "néant" or chall.lower() == "neant":
     embed.add_field(name='(Cris inhumains)', value="Gagnez avec un groupe de 5 __champions du Néant__", inline=False)
     embed.set_image(url='https://bit.ly/3QXJZti')
-  elif chall == "13b" or chall.lower() == "zaun":
+  elif chall == "25" or chall.lower() == "zaun":
     embed.add_field(name='Troupe techno-chimique', value="Gagnez avec un groupe de 5 __champions de Zaun__", inline=False)
     embed.set_image(url='https://bit.ly/3OPJXlk')
     
@@ -183,6 +182,6 @@ async def challenges_champ(message):
 #===============
 
 async def compos(message):
-  if message.content.lower() == "!challenges": await challenges(message)
-  elif message.content.startswith("!chall") or message.content.startswith("!compo"): await challenges_images(message)
-  if message.content.startswith("!region"): await challenges_champ(message)
+  if message.content.lower() == "!challenges" or message.content.lower() == "!chall" or message.content.lower() == "!compo": await challenges(message)
+  elif message.content.startswith("!challenges") or message.content.startswith("!chall") or message.content.startswith("!compo"): await challenges_images(message)
+  elif message.content.startswith("!region"): await challenges_champ(message)
