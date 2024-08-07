@@ -56,7 +56,7 @@ def helpPagesCreation(message):
     COMMAND_CALCULS = {\
         "!piece": "lance la pièce pour faire un pile ou face",\
         "!number_rdm *(min) max*": "affiche un nombre aléatoire en fonction des bornes",\
-        "!justeprix": "démarre le jeu du juste prix",\
+        "!justeprix *(max)*": "démarre le jeu du juste prix",\
     }
 
     COMMAND_RECHERCHE = {\

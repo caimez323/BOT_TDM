@@ -13,7 +13,7 @@ def aram_maker(message):
   nbrJoueurs = len(playersList)
 
   if nbrJoueurs %2 != 0 :
-    return "Merci de mettre un nombre pair de joueur"
+    return "Merci de mettre un nombre pair de joueurs"
   
   if teamType == "teamrdm":
     random.shuffle(playersList)

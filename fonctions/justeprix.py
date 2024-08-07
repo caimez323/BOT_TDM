@@ -2,8 +2,17 @@ import time
 import random
 
 async def justeprix(message,client):
-    nombre_deviner = random.randint(0, 10000)
-    await message.channel.send("Tentez de deviner le nombre (compris entre 0 et 10 000). Vous avez 30 secondes ! (stop pour abandonner)")
+    if len(message.content.split()) == 2:
+      max = message.content.split()[1]
+      try: 
+        int(max)
+      except ValueError: 
+        await message.channel.send("Merci de renseigner un nombre entier positif")
+        return
+    else:
+      max = 10000
+    nombre_deviner = random.randint(0, int(max))
+    await message.channel.send(f"Tentez de deviner le nombre (compris entre **0** et **{max}**). Vous avez 30 secondes ! (**stop** pour abandonner)")
     chrono = time.time()
 
     def checkMessage(tentatives):
@@ -13,26 +22,22 @@ async def justeprix(message,client):
         if time.time()-chrono > 30:
           await message.channel.send(f"Temps écoulé, vous avez échoué. Le nombre était {nombre_deviner}")
           return
-
         tentative = await client.wait_for("message", check = checkMessage)
         try: 
           if tentative.content =="!justeprix":
             return
-          if tentative.content == "stop" :
-            await message.channel.send(f"Vous avez décidé d'abandonner... Le nombre était {nombre_deviner}")
+          if tentative.content.lower() == "stop" or tentative.content.lower() == "!stop" :
+            await message.channel.send(f"Vous avez décidé d'abandonner... Le nombre était **{nombre_deviner}**")
             return  
-          if int(tentative.content) > 10000 or int(tentative.content)< 0:
-            await message.channel.send("Erreur, veuillez n'entrer que des nombres compris **entre 0 et 10 000**")
+          if int(tentative.content) > int(max) or int(tentative.content) < 0:
+            await message.channel.send(f"Erreur, veuillez n'entrer que des nombres compris entre **0** et **{max}**")
             continue
           if int(tentative.content) > nombre_deviner :
-            await message.channel.send("C'est moins")
-            print ("Chrono :",time.time()-chrono)
+            await message.channel.send("C'est **moins** ⬇️")
           elif int(tentative.content) < nombre_deviner :
-            await message.channel.send("C'est plus")
-            print ("Chrono :",time.time()-chrono)
+            await message.channel.send("C'est **plus** ⬆️")
           elif int(tentative.content) == nombre_deviner:
-            await message.channel.send(f"C'est gagné ! Le nombre était bien {nombre_deviner}")
-            print ("Chrono :",time.time()-chrono)
+            await message.channel.send(f"C'est **gagné** ! Le nombre était bien **{nombre_deviner}**")
             return
         except :
           await message.channel.send("Erreur, veuillez n'entrer que des **nombres**")

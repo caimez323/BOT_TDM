@@ -138,7 +138,7 @@ async def on_message(message):
     
 #====================
 
-  if message.content.lower() == "!justeprix":
+  if message.content.startswith("!justeprix"):
     await f.justeprix(message,client)
 
 #=================================MUSIQUE================================= 
