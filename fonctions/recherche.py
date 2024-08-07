@@ -3,8 +3,9 @@ from pytube import YouTube
 import discord
 from discord.ui import View, Button
 
-#On peut également ajouter des boutons liens https://gist.github.com/lykn/bac99b06d45ff8eed34c2220d86b6bf4
+#===============
 
+#On peut également ajouter des boutons liens https://gist.github.com/lykn/bac99b06d45ff8eed34c2220d86b6bf4
 
 class PaginationView(View):
     def __init__(self, links):
@@ -12,12 +13,12 @@ class PaginationView(View):
         self.links = links
         self.current_link_index = 0
 
-    @discord.ui.button(label="", style=discord.ButtonStyle.red, emoji="<cle1:1269619584688979978>")
+    @discord.ui.button(label="", style=discord.ButtonStyle.green,emoji="<:240_Amoa:1017107527961424014>")
     async def previous_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         self.current_link_index = (self.current_link_index - 1) % len(self.links)
         await self.update_message(interaction)
 
-    @discord.ui.button(label="", style=discord.ButtonStyle.green, emoji="<cle2:1269619569463394367>")
+    @discord.ui.button(label="", style=discord.ButtonStyle.green,emoji="<:238_Maraiste:1133163882999971991>")
     async def next_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         self.current_link_index = (self.current_link_index + 1) % len(self.links)
         await self.update_message(interaction)
@@ -53,3 +54,31 @@ async def youtube_search(message):
 
   await message.channel.send(content=checkList[0], view=PaginationView(checkList))
   await botMsg.delete()
+
+#===============
+
+async def w2g(message):
+    await message.channel.send("https://w2g.tv/rooms/yangoo-dnd4zxj3huxhxuj1uq?lang=fr")
+
+#===============
+
+async def pp(message):
+    userDesignation = message.content.split()[-1]
+    if len(message.mentions)>0:
+       await message.channel.send(message.mentions[0].avatar)
+       return
+    memberList = message.guild.members
+    for member in memberList:
+      if userDesignation in [member.name,member.nick,member.global_name]:
+        await message.channel.send(member.avatar)
+        return
+    await message.channel.send("Merci d'indiquer un utilisateur correct")
+
+#===============
+#===============
+
+async def recherche(message):
+    if message.content.lower() == "!w2g": await w2g(message)
+    if message.content.startswith("!pp"): await pp(message)
+    if message.content.startswith("!ytb"): await youtube_search(message)
+    # if message.content.startswith("!clash"): await clash(message, client)

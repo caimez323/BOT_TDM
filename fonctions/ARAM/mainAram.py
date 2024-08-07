@@ -1,9 +1,8 @@
-#====================================RANDOMIZEUR====================================
 import random
 
-#====================
+#===============
 
-def aram_maker(message):
+async def aram_maker(message):
   teamType = message.content.split()[0].replace("!aram_","")
   
   if teamType not in ["rdm","teamrdm"]:
@@ -22,7 +21,7 @@ def aram_maker(message):
   team_1 = playersList[:mid]
   team_2 = playersList[mid:]
 
-  return randomizeur(team_1,team_2)
+  await message.channel.send(randomizeur(team_1,team_2))
 
 #====randomizeur
 
@@ -51,10 +50,9 @@ def randomizeur(team_1,team_2):
     finalString += " {} {:<12}".format(" : " if i%2 == 0 else "|" ,champ)
   return finalString+"```"
 
+#===============
 
-#====================
-
-def reroll(message):
+async def reroll(message):
   if len(message.content.split())<2:
     return ("Merci d'envoyer le nom de la personne à reroll")
   with open("fonctions/ARAM/persos_lol.txt","r") as file:
@@ -63,15 +61,21 @@ def reroll(message):
   Champions_list.remove(pick_reroll1)
   pick_reroll2=random.choice(Champions_list)
 
-  return  ' '.join(["""```─────────────────────Reroll────────────────────""",'\n',
+  await message.channel.send(' '.join(["""```─────────────────────Reroll────────────────────""",'\n',
     '{:<9}'.format(message.content.split()[1]),'{:<3}'.format(" : "),'{:<12}'.format(pick_reroll1),'{:^3}'.format("|"), '{:<12}'.format(pick_reroll2),'\n',
-"""──────────────────────────────────────────────```"""])
+"""──────────────────────────────────────────────```"""]))
 
-#====================
+#===============
 
-def pick_rdm():
+async def pick_rdm(message):
   with open("fonctions/ARAM/persos_lol.txt","r") as file:
     Champions_list = [name.replace("\n","") for name in list(file.readlines())]
-    return("```──────────────────────────────────────────────\nChampion : "+random.choice(Champions_list)+"\n──────────────────────────────────────────────```")
+    await message.channel.send("```──────────────────────────────────────────────\nChampion : "+random.choice(Champions_list)+"\n──────────────────────────────────────────────```")
 
-#================================================================================
+#===============
+#===============
+
+async def mainAram(message):
+  if message.content.startswith("!aram_"): await aram_maker(message)
+  if message.content.startswith("!reroll"): await reroll(message)
+  if message.content.startswith("!pick_rdm"): await pick_rdm(message)

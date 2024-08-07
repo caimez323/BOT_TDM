@@ -1,6 +1,8 @@
 import discord
 import asyncio
 
+#===============
+
 async def challenges(message):
   embed = discord.Embed(title = "", 
   description = " ", 
@@ -17,6 +19,7 @@ async def challenges(message):
 
   await message.channel.send(embed=embed)
 
+#===============
 
 async def challenges_images(message):
   
@@ -118,6 +121,7 @@ async def challenges_images(message):
 
   await message.channel.send(embed=embed)
 
+#===============
 
 async def challenges_champ(message):
   rien = False
@@ -174,3 +178,11 @@ async def challenges_champ(message):
     await message.channel.send(f"**{chall}** appartient {region}")
   else:
      await message.channel.send(f"**{chall}** n'appartient à **aucune** région.")
+
+#===============
+#===============
+
+async def compos(message):
+  if message.content.lower() == "!challenges": await challenges(message)
+  elif message.content.startswith("!chall") or message.content.startswith("!compo"): await challenges_images(message)
+  if message.content.startswith("!region"): await challenges_champ(message)

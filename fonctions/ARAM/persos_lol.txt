@@ -1,4 +1,6 @@
 Aatrox
+Ahri
+Akali
 Akshan
 Alistar
 Amumu
@@ -7,12 +9,14 @@ Annie
 Aphelios
 Ashe
 Aurelion Sol
+Aurora
 Azir
 Bard
 Bel'Veth
 Blitzcrank
 Brand
 Braum
+Briar
 Caitlyn
 Camille
 Cassiopeia
@@ -38,6 +42,7 @@ Graves
 Gwen
 Hecarim
 Heimerdinger
+Hwei
 Illaoi
 Irelia
 Ivern
@@ -61,7 +66,7 @@ Kha'Zix
 Kindred
 Kled
 Kog'Maw
-Leblanc
+LeBlanc
 Lee Sin
 Leona
 Lillia
@@ -69,14 +74,15 @@ Lissandra
 Lucian
 Lulu
 Lux
-Maitre Yi
 Malphite
 Malzahar
 Maokai
+Maître Yi
 Milio
 Miss Fortune
 Mordekaiser
 Morgana
+Naafiri
 Nami
 Nasus
 Nautilus
@@ -106,7 +112,6 @@ Ryze
 Samira
 Sejuani
 Senna
-Seraphine
 Sett
 Shaco
 Shen
@@ -115,11 +120,13 @@ Singed
 Sion
 Sivir
 Skarner
+Smolder
 Sona
 Soraka
 Swain
 Sylas
 Syndra
+Séraphine
 Tahm Kench
 Taliyah
 Talon
@@ -157,5 +164,5 @@ Zed
 Zeri
 Ziggs
 Zilean
-Zoe
+Zoé
 Zyra
