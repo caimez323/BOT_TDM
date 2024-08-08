@@ -35,89 +35,101 @@ async def challenges_images(message): # Detail
   file = None
   if chall in ["1","ultimes","Ultimes"]:
     embed.add_field(name='Ultimes ultimes', value="Gagnez avec un groupe de 5, avec 3+ __ultimes à large zone d'effet__", inline=False)
-    embed.set_image(url='https://bit.ly/3a39J6M')
+    file = discord.File("fonctions/COMPO/resources/harmonie/ultime.JPG", filename="ultime.JPG")
+    embed.set_image(url='attachment://ultime.JPG')
   elif chall == "2" or chall == "réanimations" or chall == "Réanimations":
     embed.add_field(name='Mais tu vas mourir oui ?!', value="Gagnez avec un groupe de 5, avec 3+ __réanimations__", inline=False)
-    embed.set_image(url='https://bit.ly/3OLoARS')
+    file = discord.File("fonctions/COMPO/resources/harmonie/mort.JPG", filename="mort.JPG")
+    embed.set_image(url='attachment://mort.JPG')
   elif chall == "3" or chall == "compétences" or chall == "Compétences" or chall == "globales" or chall == "Globales":
     embed.add_field(name='Nulle part où se cacher', value="Gagnez avec un groupe de 5, avec 3+ __compétences globales__", inline=False)
-    embed.set_image(url='https://bit.ly/3y3HrRI')
+    file = discord.File("fonctions/COMPO/resources/harmonie/global.JPG", filename="global.JPG")
+    embed.set_image(url='attachment://global.JPG')
   elif chall == "4" or chall == "poke" or chall == "Poke":
     embed.add_field(name='Gardons nos distances', value="Gagnez avec un groupe de 5, avec 3+ __champions qui \"pokent\"__", inline=False)
-    embed.set_image(url='https://bit.ly/3udGjcT')
+    file = discord.File("fonctions/COMPO/resources/harmonie/poke.JPG", filename="poke.JPG")
+    embed.set_image(url='attachment://poke.JPG')  
   elif chall == "5" or chall == "cc" or chall == "CC":
     embed.add_field(name='Viens par ici !', value="Gagnez avec un groupe de 5, avec 3+ __effets de déplacement des ennemis__", inline=False)
-    embed.set_image(url='https://bit.ly/3y3Ne9Q')
+    file = discord.File("fonctions/COMPO/resources/harmonie/deplacements.JPG", filename="deplacements.JPG")
+    embed.set_image(url='attachment://deplacements.JPG')
   elif chall == "6" or chall == "immobilisations" or chall == "Immobilisations" or chall == "stun" or chall == "Stun":
     embed.add_field(name='On ne bouge plus', value="Gagnez avec un groupe de 5, avec 3+ __champions qui ont 2+ immobilisations__", inline=False)
-    embed.set_image(url='https://bit.ly/3y4PqOj')
+    file = discord.File("fonctions/COMPO/resources/harmonie/immobilisation.JPG", filename="immobilisation.JPG")
+    embed.set_image(url='attachment://immobilisation.JPG')
   elif chall == "7" or chall == "boucliers" or chall == "Boucliers" or chall == "soins" or chall == "Soins":
     embed.add_field(name='Protection rapprochée', value="Gagnez avec un groupe de 5, avec 3+ __champions à boucliers ou soins__", inline=False)
-    embed.set_image(url='https://bit.ly/3nnPNi9')
+    file = discord.File("fonctions/COMPO/resources/harmonie/protection.JPG", filename="protection.JPG")
+    embed.set_image(url='attachment://protection.JPG')
   elif chall == "8" or chall == "pièges" or chall == "Pièges":
     embed.add_field(name="C'est un piège !", value="Gagnez avec un groupe de 5, avec 3+ __pièges__", inline=False)
-    embed.set_image(url='https://bit.ly/3OR1SrL')
+    file = discord.File("fonctions/COMPO/resources/harmonie/piege.JPG", filename="piege.JPG")
+    embed.set_image(url='attachment://piege.JPG')
   elif chall == "9" or chall == "furtifs" or chall == "Furtifs" or chall == "invisibles" or chall == "Invisibles":
     embed.add_field(name='Où ils sont passés ?', value="Gagnez avec un groupe de 5, avec 3+ __champions furtifs__", inline=False)
-    embed.set_image(url='https://bit.ly/3QXqQYj')
+    file = discord.File("fonctions/COMPO/resources/harmonie/furtif.JPG", filename="furtif.JPG")
+    embed.set_image(url='attachment://furtif.JPG')
   elif chall == "10" or chall == "invocations" or chall == "Invocations" or chall == "familiers" or chall == "Familiers":
     embed.add_field(name='Les invocateurs de la Faille', value="Gagnez avec un groupe de 5, avec 5 __champions à invocations ou familiers__", inline=False)
-    embed.set_image(url='https://bit.ly/3y19am1')
+    file = discord.File("fonctions/COMPO/resources/harmonie/familier.JPG", filename="familier.JPG")
+    embed.set_image(url='attachment://familier.JPG')
   elif chall == "11" or chall == "créateurs" or chall == "Créateurs" or chall == "terrain" or chall == "Terrain":
     embed.add_field(name='Et le terrain fut', value="Gagnez avec un groupe de 5, avec 3+ __créateurs de terrain__", inline=False)
-    embed.set_image(url='https://bit.ly/3u9yJ3e')
+    file = discord.File("fonctions/COMPO/resources/harmonie/terrain.JPG", filename="terrain.JPG")
+    embed.set_image(url='attachment://terrain.JPG')
   elif chall == "12" or chall == "classe" or chall == "Classe" or chall.lower == "homogène" or chall == "Homogène":
     embed.add_field(name='Équipe homogène', value="Gagnez avec un groupe de 5 champions __d'une même classe__", inline=False)
-    embed.set_image(url='https://bit.ly/3I9mQzV')
   elif chall == "13" or chall.lower() == "bandle":
     embed.add_field(name = "5 sur 5", value = "Gagnez avec un groupe de 5 __champions de Bandle__")
     file = discord.File("fonctions/COMPO/resources/bandle.JPG", filename="bandle.JPG")
     embed.set_image(url='attachment://bandle.JPG')
   elif chall == "14" or chall.lower() == "bilgewater":
-    file = discord.File("fonctions/COMPO/resources/bilgewater.JPG", filename="bilgewater.JPG")
+    file = discord.File("fonctions/COMPO/resources/regions/bilgewater.JPG", filename="bilgewater.JPG")
     embed.set_image(url='attachment://bilgewater.JPG')
     embed.add_field(name='Naufrageurs', value="Gagnez avec un groupe de 5 __champions de Bilgewater__", inline=False)
   elif chall == "15" or chall.lower() == "demacia":
     embed.add_field(name='POUR DEMACIA', value="Gagnez avec un groupe de 5 __champions de Demacia__", inline=False)
-    file = discord.File("fonctions/COMPO/resources/demacia.JPG", filename="demacia.JPG")
+    file = discord.File("fonctions/COMPO/resources/regions/demacia.JPG", filename="demacia.JPG")
     embed.set_image(url='attachment://demacia.JPG')
   elif chall == "16" or chall.lower() == "freljord":
     embed.add_field(name='Premiers de la glace', value="Gagnez avec un groupe de 5 __champions de Freljord__", inline=False)
-    file = discord.File("fonctions/COMPO/resources/freljord.JPG", filename="freljord.JPG")
+    file = discord.File("fonctions/COMPO/resources/regions/freljord.JPG", filename="freljord.JPG")
     embed.set_image(url='attachment://freljord.JPG')
   elif chall == "17" or chall.lower() == "ionia":
     embed.add_field(name="Tendez l'autre Wuju", value="Gagnez avec un groupe de 5 __champions d'Ionia__", inline=False)
-    file = discord.File("fonctions/COMPO/resources/ionia.JPG", filename="ionia.JPG")
+    file = discord.File("fonctions/COMPO/resources/regions/ionia.JPG", filename="ionia.JPG")
     embed.set_image(url='attachment://ionia.JPG')
   elif chall == "18" or chall.lower() == "ixtal":
     embed.add_field(name='Terrible jungle', value="Gagnez avec un groupe de 5 __champions d'Ixtal'__", inline=False)
-    file = discord.File("fonctions/COMPO/resources/ixtal.JPG", filename="ixtal.JPG")
+    file = discord.File("fonctions/COMPO/resources/regions/ixtal.JPG", filename="ixtal.JPG")
     embed.set_image(url='attachment://ixtal.JPG')
   elif chall == "19" or chall.lower() == "noxus":
     embed.add_field(name='La force avant tout', value="Gagnez avec un groupe de 5 __champions de Noxus__", inline=False)
-    file = discord.File("fonctions/COMPO/resources/noxus.JPG", filename="noxus.JPG")
+    file = discord.File("fonctions/COMPO/resources/regions/noxus.JPG", filename="noxus.JPG")
     embed.set_image(url='attachment://noxus.JPG')
   elif chall == "20" or chall.lower() == "piltover":
     embed.add_field(name="Innovateurs", value="Gagnez avec un groupe de 5 __champions de Piltover__", inline=False)
-    file = discord.File("fonctions/COMPO/resources/piltover.JPG", filename="piltover.JPG")
+    file = discord.File("fonctions/COMPO/resources/regions/piltover.JPG", filename="piltover.JPG")
     embed.set_image(url='attachment://piltover.JPG')
   elif chall == "21" or chall.lower() == "îles" or chall.lower() == "iles":
     embed.add_field(name='Terreurs des îles', value="Gagnez avec un groupe de 5 __champions des Îles obscures__", inline=False)
-    file = discord.File("fonctions/COMPO/resources/ilesobscures.JPG", filename="ilesobscures.JPG")
+    file = discord.File("fonctions/COMPO/resources/regions/ilesobscures.JPG", filename="ilesobscures.JPG")
     embed.set_image(url='attachment://ilesobscures.JPG')
   elif chall == "22" or chall.lower() == "shurima":
     embed.add_field(name='Artistes shurimartiaux', value="Gagnez avec un groupe de 5 __champions de Shurima__", inline=False)
-    file = discord.File("fonctions/COMPO/resources/shurima.JPG", filename="shurima.JPG")
+    file = discord.File("fonctions/COMPO/resources/regions/shurima.JPG", filename="shurima.JPG")
     embed.set_image(url='attachment://shurima.JPG')
   elif chall == "23" or chall.lower() == "targon":
     embed.add_field(name='Maîtres de la montagne', value="Gagnez avec un groupe de 5 __champions de Targon__", inline=False)
-    file = discord.File("fonctions/COMPO/resources/targon.JPG", filename="targon.JPG")
+    file = discord.File("fonctions/COMPO/resources/regions/targon.JPG", filename="targon.JPG")
     embed.set_image(url='attachment://targon.JPG')
   elif chall == "24" or chall.lower() == "néant" or chall.lower() == "neant":
     embed.add_field(name='(Cris inhumains)', value="Gagnez avec un groupe de 5 __champions du Néant__", inline=False)
+    file = discord.File("fonctions/COMPO/resources/regions/neant.JPG", filename="neant.JPG")
+    embed.set_image(url='attachment://neant.JPG')
   elif chall == "25" or chall.lower() == "zaun":
     embed.add_field(name='Troupe techno-chimique', value="Gagnez avec un groupe de 5 __champions de Zaun__", inline=False)
-    file = discord.File("fonctions/COMPO/resources/zaun.JPG", filename="zaun.JPG")
+    file = discord.File("fonctions/COMPO/resources/regions/zaun.JPG", filename="zaun.JPG")
     embed.set_image(url='attachment://zaun.JPG')
     
   else:
