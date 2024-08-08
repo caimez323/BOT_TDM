@@ -1,16 +1,16 @@
 ### Compos
 
- <div width="100">
+ <div>
     <h2>Titre de l'image 1</h2>
-    <img src="resources/harmonie/ultime.JPG" alt="Description de l'image 1"  width="100">
+    <img src="resources/harmonie/ultime.JPG" alt="Description de l'image 1"  width="300">
 </div>
 
-<div width="200">
+<div>
     <h2>Titre de l'image 2</h2>
     <img src="resources/harmonie/mort.JPG" alt="Description de l'image 2">
 </div>
 
-<div width="200">
+<div>
     <h2>Titre de l'image 3</h2>
     <img src="resources/harmonie/global.JPG" alt="Description de l'image 3">
 </div>
