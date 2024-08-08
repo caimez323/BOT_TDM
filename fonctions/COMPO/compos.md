@@ -1,9 +1,7 @@
 ### Compos
 
 <p id="giveaways" align="left">
-    <a class="giveaway" href="resources/harmonie/ultime.JPG" target="_blank" rel="noreferrer">
-        <img src="https://gaming-cdn.com/images/avatars/12254287-1660306272.jpg" alt="Bob Lennon" width="76" height="76" />
-    </a> 
+    <img src="resources/harmonie/ultime.JPG" alt="Bob Lennon" width="76" height="76" />
     <a class="giveaway" href="https://www.instant-gaming.com/fr/giveaway/PIXIA?igr=enzomtp" target="_blank" rel="noreferrer">
         <img src="https://gaming-cdn.com/images/avatars/7831487-1561130856.jpg" alt="Pixia" width="76" height="76" />
     </a> 
