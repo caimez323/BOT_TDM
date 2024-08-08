@@ -1,8 +1,24 @@
-import random
+import random 
+import requests,json
 
 #===============
 
+def perso_list():
+  try :
+    response = requests.get("https://ddragon.leagueoflegends.com/cdn/14.15.1/data/fr_FR/champion.json")
+    response.raise_for_status()
+    data = response.json()
+    champList = []
+    for champ, champDesc in data["data"].items():
+      champList.append(champ)
+    return champList
+  except requests.exceptions.RequestException as e:
+    print(f"Une erreur est survenue : {e}")
+
+
 async def aram_maker(message):
+  
+  
   teamType = message.content.split()[0].replace("!aram_","")
   
   if teamType not in ["rdm","teamrdm"]:
@@ -26,8 +42,7 @@ async def aram_maker(message):
 #====randomizeur
 
 def randomizeur(team_1,team_2):
-  with open("fonctions/ARAM/persos_lol.txt","r") as file:
-    Champions_list = [name.replace("\n","") for name in list(file.readlines())]
+  Champions_list = perso_list()
 
   players=team_1+team_2
   picks=[]
@@ -55,8 +70,7 @@ def randomizeur(team_1,team_2):
 async def reroll(message):
   if len(message.content.split())<2:
     return ("Merci d'envoyer le nom de la personne à reroll")
-  with open("fonctions/ARAM/persos_lol.txt","r") as file:
-    Champions_list = [name.replace("\n","") for name in list(file.readlines())]
+  Champions_list = perso_list()
   pick_reroll1=random.choice(Champions_list)
   Champions_list.remove(pick_reroll1)
   pick_reroll2=random.choice(Champions_list)
@@ -69,8 +83,8 @@ async def reroll(message):
 
 async def pick_rdm(message):
   with open("fonctions/ARAM/persos_lol.txt","r") as file:
-    Champions_list = [name.replace("\n","") for name in list(file.readlines())]
-    await message.channel.send("```──────────────────────────────────────────────\nChampion : "+random.choice(Champions_list)+"\n──────────────────────────────────────────────```")
+    Champions_list = perso_list()
+  await message.channel.send("```──────────────────────────────────────────────\nChampion : "+random.choice(Champions_list)+"\n──────────────────────────────────────────────```")
 
 #===============
 #===============
