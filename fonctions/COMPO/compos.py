@@ -33,7 +33,7 @@ async def challenges_images(message): # Detail
   colour = discord.Colour.dark_teal())
   embed.set_author(name='Challenges', icon_url=("https://cdn.discordapp.com/attachments/888765508042768445/991727218176839710/lol.jpg"))
   file = None
-  if chall == "1" or chall == "ultimes" or chall == "Ultimes":
+  if chall in ["1","ultimes","Ultimes"]:
     embed.add_field(name='Ultimes ultimes', value="Gagnez avec un groupe de 5, avec 3+ __ultimes à large zone d'effet__", inline=False)
     embed.set_image(url='https://bit.ly/3a39J6M')
   elif chall == "2" or chall == "réanimations" or chall == "Réanimations":
@@ -70,45 +70,55 @@ async def challenges_images(message): # Detail
     embed.add_field(name='Équipe homogène', value="Gagnez avec un groupe de 5 champions __d'une même classe__", inline=False)
     embed.set_image(url='https://bit.ly/3I9mQzV')
   elif chall == "13" or chall.lower() == "bandle":
-    embed = discord.Embed(title = "5 sur 5", description = "Gagnez avec un groupe de 5 __champions de Bandle__", colour = discord.Colour.dark_teal())
+    embed.add_field(name = "5 sur 5", value = "Gagnez avec un groupe de 5 __champions de Bandle__")
     file = discord.File("fonctions/COMPO/resources/bandle.JPG", filename="bandle.JPG")
     embed.set_image(url='attachment://bandle.JPG')
   elif chall == "14" or chall.lower() == "bilgewater":
+    file = discord.File("fonctions/COMPO/resources/bilgewater.JPG", filename="bilgewater.JPG")
+    embed.set_image(url='attachment://bilgewater.JPG')
     embed.add_field(name='Naufrageurs', value="Gagnez avec un groupe de 5 __champions de Bilgewater__", inline=False)
-    embed.set_image(url='https://bit.ly/bilgewater01')
   elif chall == "15" or chall.lower() == "demacia":
     embed.add_field(name='POUR DEMACIA', value="Gagnez avec un groupe de 5 __champions de Demacia__", inline=False)
-    embed.set_image(url='https://bit.ly/3npguTs')
+    file = discord.File("fonctions/COMPO/resources/demacia.JPG", filename="demacia.JPG")
+    embed.set_image(url='attachment://demacia.JPG')
   elif chall == "16" or chall.lower() == "freljord":
     embed.add_field(name='Premiers de la glace', value="Gagnez avec un groupe de 5 __champions de Freljord__", inline=False)
-    embed.set_image(url='https://bit.ly/3ytZYYA')
+    file = discord.File("fonctions/COMPO/resources/freljord.JPG", filename="freljord.JPG")
+    embed.set_image(url='attachment://freljord.JPG')
   elif chall == "17" or chall.lower() == "ionia":
     embed.add_field(name="Tendez l'autre Wuju", value="Gagnez avec un groupe de 5 __champions d'Ionia__", inline=False)
-    embed.set_image(url='https://bit.ly/3ubJrGr')
+    file = discord.File("fonctions/COMPO/resources/ionia.JPG", filename="ionia.JPG")
+    embed.set_image(url='attachment://ionia.JPG')
   elif chall == "18" or chall.lower() == "ixtal":
     embed.add_field(name='Terrible jungle', value="Gagnez avec un groupe de 5 __champions d'Ixtal'__", inline=False)
-    embed.set_image(url='https://bit.ly/ixtal01')
+    file = discord.File("fonctions/COMPO/resources/ixtal.JPG", filename="ixtal.JPG")
+    embed.set_image(url='attachment://ixtal.JPG')
   elif chall == "19" or chall.lower() == "noxus":
     embed.add_field(name='La force avant tout', value="Gagnez avec un groupe de 5 __champions de Noxus__", inline=False)
-    embed.set_image(url='https://bit.ly/3y4ZXsL')
+    file = discord.File("fonctions/COMPO/resources/noxus.JPG", filename="noxus.JPG")
+    embed.set_image(url='attachment://noxus.JPG')
   elif chall == "20" or chall.lower() == "piltover":
     embed.add_field(name="Innovateurs", value="Gagnez avec un groupe de 5 __champions de Piltover__", inline=False)
-    embed.set_image(url='https://bit.ly/3OvfxVy')
+    file = discord.File("fonctions/COMPO/resources/piltover.JPG", filename="piltover.JPG")
+    embed.set_image(url='attachment://piltover.JPG')
   elif chall == "21" or chall.lower() == "îles" or chall.lower() == "iles":
     embed.add_field(name='Terreurs des îles', value="Gagnez avec un groupe de 5 __champions des Îles obscures__", inline=False)
-    embed.set_image(url='https://bit.ly/3nq2d8W')
+    file = discord.File("fonctions/COMPO/resources/ilesobscures.JPG", filename="ilesobscures.JPG")
+    embed.set_image(url='attachment://ilesobscures.JPG')
   elif chall == "22" or chall.lower() == "shurima":
     embed.add_field(name='Artistes shurimartiaux', value="Gagnez avec un groupe de 5 __champions de Shurima__", inline=False)
-    embed.set_image(url='https://bit.ly/shurima01')
+    file = discord.File("fonctions/COMPO/resources/shurima.JPG", filename="shurima.JPG")
+    embed.set_image(url='attachment://shurima.JPG')
   elif chall == "23" or chall.lower() == "targon":
     embed.add_field(name='Maîtres de la montagne', value="Gagnez avec un groupe de 5 __champions de Targon__", inline=False)
-    embed.set_image(url='https://bit.ly/3OyQxg6')
+    file = discord.File("fonctions/COMPO/resources/targon.JPG", filename="targon.JPG")
+    embed.set_image(url='attachment://targon.JPG')
   elif chall == "24" or chall.lower() == "néant" or chall.lower() == "neant":
     embed.add_field(name='(Cris inhumains)', value="Gagnez avec un groupe de 5 __champions du Néant__", inline=False)
-    embed.set_image(url='https://bit.ly/3QXJZti')
   elif chall == "25" or chall.lower() == "zaun":
     embed.add_field(name='Troupe techno-chimique', value="Gagnez avec un groupe de 5 __champions de Zaun__", inline=False)
-    embed.set_image(url='https://bit.ly/3OPJXlk')
+    file = discord.File("fonctions/COMPO/resources/zaun.JPG", filename="zaun.JPG")
+    embed.set_image(url='attachment://zaun.JPG')
     
   else:
     await message.channel.send("Ce challenge ne fait pas partie de la liste :")
