@@ -2,7 +2,7 @@
 
  <div>
     <h2>Titre de l'image 1</h2>
-    <img src="resources/harmonie/ultime.JPG" alt="Description de l'image 1"  width="300">
+    <img src="resources/harmonie/ultime.JPG" alt="Description de l'image 1"  width="500">
 </div>
 
 <div>
