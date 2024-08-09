@@ -1,12 +1,8 @@
 import discord
-import asyncio
 
 #===============
 
 async def challenges(message): # Tout
-  embed = discord.Embed(title = "", 
-  description = " ", 
-  colour = discord.Colour.green())
 
   compoList = {"Ultimes ultimes":"https://raw.githubusercontent.com/caimez323/BOT_TDM/main/fonctions/COMPO/resources/harmonie/ultime.JPG",\
                     "Mais tu vas mourir oui ?!" : "https://raw.githubusercontent.com/caimez323/BOT_TDM/main/fonctions/COMPO/resources/harmonie/mort.JPG",\
@@ -55,7 +51,6 @@ async def challenges(message): # Tout
   embed = discord.Embed(title="",description=theString, colour = discord.Colour.dark_teal())
   embed.set_author(name='Challenges', icon_url=("https://cdn.discordapp.com/attachments/888765508042768445/991727218176839710/lol.jpg"))
   embed.set_footer(text=message.author.name, icon_url=message.author.avatar)
-
 
   await message.channel.send(embed=embed)
 
