@@ -51,7 +51,7 @@ async def on_message(message):
   await f.snifsnouf(message)
 
 #==========> MUSIQUE <==========
-  await f.music(message)
+  await f.music(message,client)
 
 #==========> ARAM <==========
   await f.mainAram(message)
