@@ -8,14 +8,54 @@ async def challenges(message): # Tout
   description = " ", 
   colour = discord.Colour.green())
 
+  compoList = {"Ultimes ultimes":"https://raw.githubusercontent.com/caimez323/BOT_TDM/main/fonctions/COMPO/resources/harmonie/ultime.JPG",\
+                    "Mais tu vas mourir oui ?!" : "https://raw.githubusercontent.com/caimez323/BOT_TDM/main/fonctions/COMPO/resources/harmonie/mort.JPG",\
+                    "Nulle part où se cacher":"https://raw.githubusercontent.com/caimez323/BOT_TDM/main/fonctions/COMPO/resources/harmonie/furtif.JPG",\
+                    "Gardons nos distances":"https://raw.githubusercontent.com/caimez323/BOT_TDM/main/fonctions/COMPO/resources/harmonie/poke.JPG",\
+                    "Viens par ici !":"https://raw.githubusercontent.com/caimez323/BOT_TDM/main/fonctions/COMPO/resources/harmonie/deplacements.JPG",\
+                    "On ne bouge plus":"https://raw.githubusercontent.com/caimez323/BOT_TDM/main/fonctions/COMPO/resources/harmonie/immobilisation.JPG",\
+                    "Protection rapprochée":"https://raw.githubusercontent.com/caimez323/BOT_TDM/main/fonctions/COMPO/resources/harmonie/protection.JPG",\
+                    "C'est un piège !" :"https://raw.githubusercontent.com/caimez323/BOT_TDM/main/fonctions/COMPO/resources/harmonie/piege.JPG",\
+                    "Où ils sont passés ?" : "https://raw.githubusercontent.com/caimez323/BOT_TDM/main/fonctions/COMPO/resources/harmonie/furtif.JPG",\
+                    "Les invocateurs de la Faille" : "https://raw.githubusercontent.com/caimez323/BOT_TDM/main/fonctions/COMPO/resources/harmonie/familier.JPG",\
+                    "Et le terrain fut" : "https://raw.githubusercontent.com/caimez323/BOT_TDM/main/fonctions/COMPO/resources/harmonie/terrain.JPG",\
+                    "Équipe homogène" :"https://www.google.com"
+                    }
+
+  regionList = {"Bandle":"https://raw.githubusercontent.com/caimez323/BOT_TDM/main/fonctions/COMPO/resources/regions/bandle.JPG",\
+                "Bilgewater":"https://raw.githubusercontent.com/caimez323/BOT_TDM/main/fonctions/COMPO/resources/regions/bilgewater.JPG",\
+                "Demacia":"https://raw.githubusercontent.com/caimez323/BOT_TDM/main/fonctions/COMPO/resources/regions/demacia.JPG",\
+                "Freljord":"https://raw.githubusercontent.com/caimez323/BOT_TDM/main/fonctions/COMPO/resources/regions/freljord.JPG",\
+                "Ionia":"https://raw.githubusercontent.com/caimez323/BOT_TDM/main/fonctions/COMPO/resources/regions/ionia.JPG",\
+                "Ixtal":"https://raw.githubusercontent.com/caimez323/BOT_TDM/main/fonctions/COMPO/resources/regions/ixtal.JPG",\
+                "Noxus":"https://raw.githubusercontent.com/caimez323/BOT_TDM/main/fonctions/COMPO/resources/regions/noxus.JPG",\
+                "Piltover":"https://raw.githubusercontent.com/caimez323/BOT_TDM/main/fonctions/COMPO/resources/regions/piltover.JPG",\
+                "îles Obscures":"https://raw.githubusercontent.com/caimez323/BOT_TDM/main/fonctions/COMPO/resources/regions/ilesobscures.JPG",\
+                "Shurima":"https://raw.githubusercontent.com/caimez323/BOT_TDM/main/fonctions/COMPO/resources/regions/shurima.JPG",\
+                "Targon":"https://raw.githubusercontent.com/caimez323/BOT_TDM/main/fonctions/COMPO/resources/regions/targon.JPG",\
+                "Néant":"https://raw.githubusercontent.com/caimez323/BOT_TDM/main/fonctions/COMPO/resources/regions/neant.JPG",\
+                "Zaun":"https://raw.githubusercontent.com/caimez323/BOT_TDM/main/fonctions/COMPO/resources/regions/zaun.JPG"
+                }
+
+
+  theString = "**\n• Compos Harmonie**"
+  count = 1
+  for name,desc in compoList.items():
+    if desc=="":
+      theString+="\n**"+str(count)+".** "+name
+    else:
+      theString+="\n**"+str(count)+".** ["+name+"]"+"("+desc+")"
+    count+=1
+  theString+="\n**\n• Compos Régions**"
+  for name,desc in regionList.items():
+    theString+="\n**"+str(count)+".** ["+name+"]"+"("+desc+")"
+    count+=1
+
+
+  embed = discord.Embed(title="",description=theString, colour = discord.Colour.dark_teal())
   embed.set_author(name='Challenges', icon_url=("https://cdn.discordapp.com/attachments/888765508042768445/991727218176839710/lol.jpg"))
-
-  embed.add_field(name='**\n• Champions Compos**', value="\n**1.** [Ultimes ultimes](https://bit.ly/3a39J6M)\n**2.** [Mais tu vas mourir oui ?!](https://bit.ly/3OLoARS)\n**3.** [Nulle part où se cacher](https://bit.ly/3y3HrRI)\n**4.** [Gardons nos distances](https://bit.ly/3udGjcT)\n**5.** [Viens par ici !](https://bit.ly/3y3Ne9Q)\n**6.** [On ne bouge plus](https://bit.ly/3y4PqOj)\n**7.** [Protection rapprochée](https://bit.ly/3nnPNi9)\n**8.** [C'est un piège !](https://bit.ly/3OR1SrL)\n**9.** [Où ils sont passés ?](https://bit.ly/3QXqQYj)\n**10.** [Les invocateurs de la Faille](https://bit.ly/3y19am1)\n**11.** [Et le terrain fut](https://bit.ly/3u9yJ3e)\n**12.** [Équipe homogène](https://bit.ly/3I9mQzV)",  inline=False)
-
-  embed.add_field(name='**\n• Champions Régions**', value='\n**13.** [Bandle](https://bit.ly/3OQU4pX)\n**14.** [Bilgewater](https://bit.ly/bilgewater01)\n**15.** [Demacia](https://bit.ly/3npguTs)\n**16.** [Freljord](https://bit.ly/3ytZYYA)\n**17.** [Ionia](https://bit.ly/3ubJrGr)\n**18.** [Ixtal](https://bit.ly/ixtal01)\n**19.** [Noxus](https://bit.ly/3y4ZXsL)\n**20.** [Piltover](https://bit.ly/3OvfxVy)\n**21.** [îles Obscures](https://bit.ly/3nq2d8W)\n**22.** [Shurima](https://bit.ly/shurima01)\n**23.** [Targon](https://bit.ly/3OyQxg6)\n**24.** [Néant](https://bit.ly/3QXJZti)\n**25.** [Zaun](https://bit.ly/3OPJXlk)', 
-  inline=False)
-
   embed.set_footer(text=message.author.name, icon_url=message.author.avatar)
+
 
   await message.channel.send(embed=embed)
 
