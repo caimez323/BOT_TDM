@@ -21,10 +21,11 @@ current_song = {}
 play_start_time = {}
 volume_levels = {}
 timecode = {}
+actTimecode = {}
 
 def get_ffmep_options(volume):
+    time = 0
     if timecode.get(keyInfo[1]) is not None: time = timecode.get(keyInfo[1])
-    else: time = 0
     return {'before_options': f'-ss {time} -reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5',
     'options': f'-vn -filter:a "volume={volume}"'
 }
@@ -43,6 +44,9 @@ async def play_next(skipped=False):
         try:
             # Préparer le lecteur audio
             player = discord.FFmpegOpusAudio(url, **get_ffmep_options(volume))
+            if timecode.get(guild_id) is not None: #cad on a un timecode
+                actTimecode[guild_id] = timecode[guild_id]
+                timecode[guild_id] = 0
             # Jouer la chanson et définir la fonction de rappel
             voice_client.play(player, after=lambda e: on_end_callback(e))
             if skipped : await keyInfo[2].send(f'Skipped to: `{title}`')
@@ -62,7 +66,7 @@ async def nowplaying(message):
     #current_song_data 0 = url, 1 = title, 2 = duration
     current_song_data = current_song[guild_id]
     duration = current_song_data[2]
-    current_position = time.time() - play_start_time.get(guild_id, 0)
+    current_position = time.time() - play_start_time.get(guild_id, 0) + (0 if actTimecode.get(guild_id) is None else actTimecode.get(guild_id))
     remaining_time = duration - current_position
     await message.channel.send(
             f"Now playing: {current_song_data[1]}\n"
@@ -75,6 +79,17 @@ async def nowplaying(message):
     theTrackString[musicPosition+1] = "|"
     await message.channel.send("".join(theTrackString))
 
+
+def time_to_seconds(time_str):
+    parts = time_str.split(':')
+    if len(parts) == 2:
+        minutes, seconds = parts
+        return int(minutes) * 60 + int(seconds)
+    elif len(parts) == 1:
+        return int(parts[0])
+    else:
+        raise ValueError("Invalid time format. Use 'minutes:seconds' or 'seconds'.")
+    
 #==============================================
 #=============      START             =========
 #==============================================
@@ -219,7 +234,13 @@ async def music(message,client):
             if guild_id not in queues:
                 queues[guild_id] = []
             queues[guild_id].insert(0,(song, title ,duration))
-        timecode[guild_id] = int(message.content.split()[1])
+        else: # si on joue pas c'est inutile
+            await message.channel.send("Aucune musique ne cours")
+            return
+        timecode[guild_id] = time_to_seconds(message.content.split()[1])
+        if type(timecode[guild_id]) is not int:
+            await message.channel.send("Merci de mettre un temps en secondes")
+            return
         if timecode[guild_id] >= duration:
             await message.channel.send(f"Merci de mettre un temps compris dans la musique (`{duration}`)")
             return
