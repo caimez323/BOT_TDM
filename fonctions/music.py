@@ -7,6 +7,7 @@ import random
 #loop
 #auteur
 #Ajouter autres plateformes & playlist
+#afk for too long = deco
 
 #https://github.com/Rapptz/discord.py/issues/6057
 
