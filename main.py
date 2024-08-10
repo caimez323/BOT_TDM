@@ -68,6 +68,8 @@ async def on_message(message):
 #==========> RECHERCHE <==========
   await f.recherche(message)
 
+  await f.jumbledWordsResolver(message)
+
 #TODO 
   if message.content.startswith("!clash"): 
     await f.clash(message)
