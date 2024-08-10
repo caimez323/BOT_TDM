@@ -54,13 +54,13 @@ def createBat(currList):
 
 async def snifsnouf(message):
 
-    if message.author.id in [172362870439411713,257167325558472705]: #Laiken or Caimez
-        mainList = ref.get()
-        if message.content == bot_prefix+'list': # Affiche la liste en clair
-            disString =""
-            for name in mainList:
-                disString += "{}\n".format(name)
-            await message.channel.send('Voici la liste des partenaires :\n{}'.format(disString))
+        if message.author.id in [172362870439411713,257167325558472705]: #Laiken or Caimez
+            mainList = ref.get()
+            if message.content == bot_prefix+'list': # Affiche la liste en clair
+                disString =""
+                for name in mainList:
+                    disString += "{}\n".format(name)
+                await message.channel.send('Voici la liste des partenaires :\n{}'.format(disString))
 
         if message.content.startswith(bot_prefix+'addList'): # Ajoute une valeur à la liste si elle est pas déjà ajoutée
             newName = message.content.replace(bot_prefix+'addList ',"").upper()
@@ -91,7 +91,7 @@ async def snifsnouf(message):
             displayString = "Liste des commandes : \n"
             displayString +="> **{}list** : permet de lister les créateurs déjà enregistrés \n".format(bot_prefix)
             displayString +="> **{}addList** : permet d'ajoute un créateur à la liste\n".format(bot_prefix)
-            displayString +="> **{}webList** : permet de donner le site internet\n".format(bot_prefix)
+            displayString +="> **{}website** : permet de donner le site internet\n".format(bot_prefix)
             displayString +="> **{}listMacro** : permet de générer une macro téléchargeable pour tout ouvrir d'un coup\n".format(bot_prefix)
             displayString +="> **{}iwu** : permet de voir si la database est syncro avec le snifSnouf\n".format(bot_prefix)
             displayString +="> **{}dataSync** : permet de syncroniser\n".format(bot_prefix)

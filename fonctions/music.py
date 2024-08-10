@@ -15,20 +15,20 @@ queues = {}
 voice_clients = {}
 yt_dl_options = {"format": "bestaudio/best"}
 ytdl = yt_dlp.YoutubeDL(yt_dl_options)
-ffmpeg_options = {
-    'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5',
-    'options': '-vn -filter:a "volume=0.25"'
-}
 
 keyInfo = []
 current_song = {}
 play_start_time = {}
 volume_levels = {}
-
+timecode = {}
 
 def get_ffmep_options(volume):
-
-    return {'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5',
+    print(timecode)
+    if timecode.get(keyInfo[1]) is not None:
+        time = timecode.get(keyInfo[1])
+        print(time)
+    else:time = 0
+    return {'before_options': f'-ss {time} -reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5',
     'options': f'-vn -filter:a "volume={volume}"'
 }
 
@@ -185,16 +185,35 @@ async def music(message,client):
         del queues[guild_id][id]
 
     elif message.content.startswith("!volume"):
+            if len(message.content.split())<=1:
+                await message.channel.send("Merci de mettre un volume entre 0.0 et 2.0")
+                return
             volume = float(message.content.split()[1])
             if (0.0 <= volume <= 2.0) or message.author.id in [172362870439411713,257167325558472705]:  # Limiter le volume entre 0.0 et 2.0
                 volume_levels[guild_id] = volume
                 await message.channel.send(f'Volume réglé à {volume:.2f}')
                 if guild_id in voice_clients and voice_clients[guild_id].is_playing():
+                    #Stop, re-add in first, replay
                     voice_clients[guild_id].stop()
                     song,title,duration = current_song[guild_id]
                     if guild_id not in queues:
                         queues[guild_id] = []
                     queues[guild_id].insert(0,(song, title ,duration))
-                    play_next()
+                    await play_next()
             else:
                 await message.channel.send("Merci de mettre un volume entre 0.0 et 2.0")
+    
+    elif message.content.startswith("!goto"):
+        if len(message.content.split())<=1:
+            return
+        #Stop, re-add in first, replay
+        if guild_id in voice_clients and voice_clients[guild_id].is_playing():
+            #Stop, re-add in first, replay
+            voice_clients[guild_id].stop()
+            song,title,duration = current_song[guild_id]
+            if guild_id not in queues:
+                queues[guild_id] = []
+            queues[guild_id].insert(0,(song, title ,duration))
+        timecode[guild_id] = int(message.content.split()[1])
+        await message.channel.send(f"Musique mise à {timecode[guild_id]}")
+        await play_next(skipped=False)
