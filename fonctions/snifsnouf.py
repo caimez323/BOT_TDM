@@ -54,7 +54,7 @@ def createBat(currList):
 
 async def snifsnouf(message):
 
-    if message.author.id==172362870439411713 or message.author.id==257167325558472705: #Laiken or Caimez
+    if message.author.id in [172362870439411713,257167325558472705]: #Laiken or Caimez
         mainList = ref.get()
         if message.content == bot_prefix+'list': # Affiche la liste en clair
             disString =""
