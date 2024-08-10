@@ -23,14 +23,13 @@ volume_levels = {}
 timecode = {}
 
 def get_ffmep_options(volume):
-    print(timecode)
-    if timecode.get(keyInfo[1]) is not None:
-        time = timecode.get(keyInfo[1])
-        print(time)
-    else:time = 0
+    if timecode.get(keyInfo[1]) is not None: time = timecode.get(keyInfo[1])
+    else: time = 0
     return {'before_options': f'-ss {time} -reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5',
     'options': f'-vn -filter:a "volume={volume}"'
 }
+
+#goto baise le np 
 
 async def play_next(skipped=False):
     guild_id = keyInfo[1]
@@ -83,9 +82,15 @@ async def nowplaying(message):
 async def music(message,client):
     global queues
     guild_id = message.guild.id
-    keyInfo.append(client)#0
-    keyInfo.append(guild_id)#1
-    keyInfo.append(message.channel)#2
+    if len(keyInfo) != 3: #not setup yet:
+        keyInfo.append(client)#0
+        keyInfo.append(guild_id)#1
+        keyInfo.append(message.channel)#2
+    else:
+        keyInfo[0] = client
+        keyInfo[1] = guild_id
+        keyInfo[2] = message.channel
+
     if message.content.startswith("!play"):
         
         # Extract the search query from the message
@@ -215,5 +220,5 @@ async def music(message,client):
                 queues[guild_id] = []
             queues[guild_id].insert(0,(song, title ,duration))
         timecode[guild_id] = int(message.content.split()[1])
-        await message.channel.send(f"Musique mise à {timecode[guild_id]}")
+        await message.channel.send(f"Musique mise à `{timecode[guild_id]}`")
         await play_next(skipped=False)
