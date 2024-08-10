@@ -69,7 +69,7 @@ async def snifsnouf(message):
             displayString = "Element ajouté. Merci !" if added else "Element déjà présent"
             await message.channel.send(displayString)
 
-        if message.content == bot_prefix+'webList': # Donne le lien du site
+        if message.content == bot_prefix+'website': # Donne le lien du site
             await message.channel.send('Le site est : https://caimez323.github.io/src/snifsnouf.html')
         
         if message.content == bot_prefix+'listMacro': # Crée un fichier macro à DL qui ouvre tout

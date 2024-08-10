@@ -67,9 +67,8 @@ def helpPagesCreation(message):
     }
     
     COMMAND_SNIFSNOUF = {\
-        "!list": "affiche la liste des créateurs déjà enregistrés",\
         "!addList": "ajoute un créateur à la liste",\
-        "!webList": "affiche le site web",\
+        "!website": "affiche le site web",\
         "!macro ": "génère une macro téléchargeable pour tout ouvrir d'un coup",\
         "!iwu": "vérifie si la database est syncro avec le snifSnouf",\
         "!dataSync ": "syncronisation de la database avec le snifsnouf",\
@@ -91,7 +90,7 @@ def helpPagesCreation(message):
         "BLOC_MUSIQUE (en développement)": COMMAND_MUSIQUE,\
         "BLOC_CALCULS": COMMAND_CALCULS,\
         "BLOC_RECHERCHE": COMMAND_RECHERCHE,\
-        "BLOC_SNIFSNOUF (en développement)": COMMAND_SNIFSNOUF,\
+        "BLOC_SNIFSNOUF": COMMAND_SNIFSNOUF,\
         "CUSTOM WORDS": COMMAND_CUSTOMWORDS,\
     }
     
