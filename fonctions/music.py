@@ -2,16 +2,15 @@ import discord
 import asyncio
 import yt_dlp
 import time
+import random
 
 #loop
-#queue random
 #auteur
-#np avec barre
-#delete queue
 
 #Ajouter autres plateformes & playlist
-
 #https://github.com/Rapptz/discord.py/issues/6057
+
+
 queues = {}
 voice_clients = {}
 yt_dl_options = {"format": "bestaudio/best"}
@@ -69,6 +68,7 @@ async def nowplaying(message):
     musicPosition = (int(int(current_position)*20 / int(duration)))
     theTrackString[musicPosition+1] = "|"
     await message.channel.send("".join(theTrackString))
+
 
 async def music(message,client):
     global queues
@@ -148,7 +148,26 @@ async def music(message,client):
             await play_next(skipped=True)
 
     elif message.content == "?queue":
-        await message.channel.send(f"A suivre : {queues[guild_id]}")
+        theString = ""
+        for tup in queues[guild_id]:
+            theString+=f"\n{tup[1]}"
+        await message.channel.send(f"A suivre : {theString}")
     
     elif message.content == "?np" or message.content == "?nowplaying":
         await nowplaying(message)
+    
+    elif message.content == "?shuffle":
+        random.shuffle(queues[guild_id])
+        await message.channel.send("Queue mélangée !")
+
+    elif message.content.startswith("?remove"):
+        if len(message.content.split())!=2:
+            await message.channel.send("Merci d'envoyer un numéro à supprimer")
+            return
+        id = int(message.content.split()[1])-1
+        if len(queues[guild_id])<= id:
+            await message.channel.send("Merci d'indiquer un nombre correct")
+            return
+
+        await message.channel.send(f"`{queues[guild_id][id][1]}` supprimé")
+        del queues[guild_id][id]
