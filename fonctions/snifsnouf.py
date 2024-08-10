@@ -91,7 +91,7 @@ async def snifsnouf(message):
             displayString +="> **{}list** : permet de lister les créateurs déjà enregistrés \n".format(bot_prefix)
             displayString +="> **{}addList** : permet d'ajoute un créateur à la liste\n".format(bot_prefix)
             displayString +="> **{}webList** : permet de donner le site internet\n".format(bot_prefix)
-            displayString +="> **{}macro** : permet de générer une macro téléchargeable pour tout ouvrir d'un coup\n".format(bot_prefix)
+            displayString +="> **{}listMacro** : permet de générer une macro téléchargeable pour tout ouvrir d'un coup\n".format(bot_prefix)
             displayString +="> **{}iwu** : permet de voir si la database est syncro avec le snifSnouf\n".format(bot_prefix)
             displayString +="> **{}dataSync** : permet de syncroniser\n".format(bot_prefix)
             await message.channel.send(displayString)
