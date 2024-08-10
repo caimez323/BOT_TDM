@@ -56,14 +56,19 @@ async def nowplaying(message):
     guild_id = keyInfo[1]
     #current_song_data 0 = url, 1 = title, 2 = duration
     current_song_data = current_song[guild_id]
+    duration = current_song_data[2]
     current_position = time.time() - play_start_time.get(guild_id, 0)
-    remaining_time = current_song_data[2] - current_position
+    remaining_time = duration - current_position
     await message.channel.send(
             f"Now playing: {current_song_data[1]}\n"
-            f"Duration: {current_song_data[2]} seconds\n"
-            f"Current Position: {current_position} seconds\n"
-            f"Remaining Time: {remaining_time} seconds"
+            f"Duration: {duration} seconds\n"
+            f"Current Position: {current_position:.0f} seconds\n"
+            f"Remaining Time: {remaining_time:.0f} seconds"
         )
+    theTrackString=list("`────────────────────`")
+    musicPosition = (int(int(current_position)*20 / int(duration)))
+    theTrackString[musicPosition+1] = "|"
+    await message.channel.send("".join(theTrackString))
 
 async def music(message,client):
     global queues
@@ -147,4 +152,3 @@ async def music(message,client):
     
     elif message.content == "?np" or message.content == "?nowplaying":
         await nowplaying(message)
-        await message.channel.send(current_song[guild_id])
