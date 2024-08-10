@@ -87,6 +87,7 @@ async def snifsnouf(message):
             await message.channel.send("Données du bot syncronisées avec le site")
         
         if message.content == bot_prefix+"snifHelp":
+            return
             displayString = "Liste des commandes : \n"
             displayString +="> **{}list** : permet de lister les créateurs déjà enregistrés \n".format(bot_prefix)
             displayString +="> **{}addList** : permet d'ajoute un créateur à la liste\n".format(bot_prefix)
