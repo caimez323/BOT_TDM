@@ -1,11 +1,7 @@
 FROM python:3.12-slim
 
-# Installer les dépendances nécessaires
+# Installer ffmpeg à partir des dépôts officiels
 RUN apt-get update && \
-    apt-get install -y \
-    software-properties-common \
-    && add-apt-repository ppa:jonathonf/ffmpeg-4 \
-    && apt-get update && \
     apt-get install -y \
     ffmpeg \
     && rm -rf /var/lib/apt/lists/*
