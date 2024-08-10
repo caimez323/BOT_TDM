@@ -9,4 +9,4 @@ from .fights import fights
 from .music import music
 from .clash import clash
 from .help import help
-from .jumbledWordsRes.jumbledWordsResolver import jumbledWordsResolver
+#from .jumbledWordsRes.jumbledWordsResolver import jumbledWordsResolver
