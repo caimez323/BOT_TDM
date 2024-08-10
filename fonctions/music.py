@@ -6,8 +6,8 @@ import random
 
 #loop
 #auteur
-
 #Ajouter autres plateformes & playlist
+
 #https://github.com/Rapptz/discord.py/issues/6057
 
 
@@ -30,7 +30,6 @@ def get_ffmep_options(volume):
     'options': f'-vn -filter:a "volume={volume}"'
 }
 
-#goto baise le np 
 
 async def play_next(skipped=False):
     guild_id = keyInfo[1]
@@ -182,6 +181,10 @@ async def music(message,client):
 
     elif message.content.strip() == "!queue":
         theString = ""
+        if queues.get(guild_id) is None:
+            await message.channel.send(f"Queue vide pour l'instant")
+            return
+            
         for tup in queues.get(guild_id):
             theString+=f"\n{tup[1]}"
         await message.channel.send(f"A suivre : {theString}")
@@ -245,4 +248,4 @@ async def music(message,client):
             await message.channel.send(f"Merci de mettre un temps compris dans la musique (`{duration}`)")
             return
         await message.channel.send(f"Musique mise à `{timecode[guild_id]}`")
-        await play_next(skipped=False)
+        await play_next()
