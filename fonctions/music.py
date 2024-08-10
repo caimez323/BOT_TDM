@@ -220,5 +220,8 @@ async def music(message,client):
                 queues[guild_id] = []
             queues[guild_id].insert(0,(song, title ,duration))
         timecode[guild_id] = int(message.content.split()[1])
+        if timecode[guild_id] >= duration:
+            await message.channel.send(f"Merci de mettre un temps compris dans la musique (`{duration}`)")
+            return
         await message.channel.send(f"Musique mise à `{timecode[guild_id]}`")
         await play_next(skipped=False)
