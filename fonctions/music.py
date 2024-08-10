@@ -20,7 +20,6 @@ ffmpeg_options = {
     'options': '-vn -filter:a "volume=0.25"'
 }
 
-lClient = ""
 keyInfo = []
 current_song = {}
 play_start_time = {}
@@ -77,6 +76,9 @@ async def nowplaying(message):
     theTrackString[musicPosition+1] = "|"
     await message.channel.send("".join(theTrackString))
 
+#==============================================
+#=============      START             =========
+#==============================================
 
 async def music(message,client):
     global queues
@@ -84,7 +86,8 @@ async def music(message,client):
     keyInfo.append(client)#0
     keyInfo.append(guild_id)#1
     keyInfo.append(message.channel)#2
-    if message.content.startswith("?play"):
+    if message.content.startswith("!play"):
+        
         # Extract the search query from the message
         query = ' '.join(message.content.split()[1:])  # Join the rest of the message as the query
         # If not connected to a channel, connect to the user's channel
@@ -115,7 +118,7 @@ async def music(message,client):
         if not voice_client.is_playing():
             await play_next()
 
-    elif message.content.startswith("?pause"): # SI on est en pause on est pas considéré comme entrain de jouer donc ça skip si on play
+    elif message.content.startswith("!pause"): # SI on est en pause on est pas considéré comme entrain de jouer donc ça skip si on play
         try:
             if guild_id in voice_clients and voice_clients[guild_id].is_playing():
                 voice_clients[guild_id].pause()
@@ -126,7 +129,7 @@ async def music(message,client):
             print(e)
             await message.channel.send('An error occurred while pausing the music.')
 
-    elif message.content.startswith("?resume"):
+    elif message.content.startswith("!resume"):
         try:
             if guild_id in voice_clients and voice_clients[guild_id].is_paused():
                 voice_clients[guild_id].resume()
@@ -137,7 +140,7 @@ async def music(message,client):
             print(e)
             await message.channel.send('An error occurred while resuming the music.')
 
-    elif message.content.startswith("?stop"):
+    elif message.content.strip() in ["!stop","!leave"]:
         queues = {}
         try:
             if guild_id in voice_clients:
@@ -150,25 +153,27 @@ async def music(message,client):
         except Exception as e:
             print(e)
             await message.channel.send('An error occurred while stopping the music.')
-    elif message.content == "?skip":
+
+    
+    elif message.content.strip() == "!skip":
         if len(queues[guild_id])>0 and voice_clients[guild_id].is_playing():
             voice_clients[guild_id].stop()
             await play_next(skipped=True)
 
-    elif message.content == "?queue":
+    elif message.content.strip() == "!queue":
         theString = ""
         for tup in queues.get(guild_id):
             theString+=f"\n{tup[1]}"
         await message.channel.send(f"A suivre : {theString}")
     
-    elif message.content == "?np" or message.content == "?nowplaying":
+    elif message.content.strip() in ["!np","!nowplaying"]:
         await nowplaying(message)
     
-    elif message.content == "?shuffle":
+    elif message.content.strip() == "!shuffle":
         random.shuffle(queues[guild_id])
         await message.channel.send("Queue mélangée !")
 
-    elif message.content.startswith("?remove"):
+    elif message.content.startswith("!remove"):
         if len(message.content.split())!=2:
             await message.channel.send("Merci d'envoyer un numéro à supprimer")
             return
@@ -176,20 +181,17 @@ async def music(message,client):
         if len(queues[guild_id])<= id:
             await message.channel.send("Merci d'indiquer un nombre correct")
             return
-
         await message.channel.send(f"`{queues[guild_id][id][1]}` supprimé")
         del queues[guild_id][id]
 
-    elif message.content.startswith("?volume"):
+    elif message.content.startswith("!volume"):
             volume = float(message.content.split()[1])
             if (0.0 <= volume <= 2.0) or message.author.id in [172362870439411713,257167325558472705]:  # Limiter le volume entre 0.0 et 2.0
                 volume_levels[guild_id] = volume
                 await message.channel.send(f'Volume réglé à {volume:.2f}')
                 if guild_id in voice_clients and voice_clients[guild_id].is_playing():
                     voice_clients[guild_id].stop()
-                    #récup les infos
                     song,title,duration = current_song[guild_id]
-                    #mettre dans la queue
                     if guild_id not in queues:
                         queues[guild_id] = []
                     queues[guild_id].insert(0,(song, title ,duration))
