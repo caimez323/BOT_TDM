@@ -15,16 +15,23 @@ queues = {}
 voice_clients = {}
 yt_dl_options = {"format": "bestaudio/best"}
 ytdl = yt_dlp.YoutubeDL(yt_dl_options)
-
 ffmpeg_options = {
     'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5',
     'options': '-vn -filter:a "volume=0.25"'
 }
+
 lClient = ""
 keyInfo = []
 current_song = {}
 play_start_time = {}
+volume_levels = {}
 
+
+def get_ffmep_options(volume):
+
+    return {'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5',
+    'options': f'-vn -filter:a "volume={volume}"'
+}
 
 async def play_next(skipped=False):
     guild_id = keyInfo[1]
@@ -34,9 +41,10 @@ async def play_next(skipped=False):
         current_song[guild_id] = [url,title,duration]
         voice_client = voice_clients.get(guild_id)
         play_start_time[guild_id] = time.time()
+        volume = volume_levels.get(guild_id, 0.25)
         try:
             # Préparer le lecteur audio
-            player = discord.FFmpegOpusAudio(url, **ffmpeg_options)
+            player = discord.FFmpegOpusAudio(url, **get_ffmep_options(volume))
             # Jouer la chanson et définir la fonction de rappel
             voice_client.play(player, after=lambda e: on_end_callback(e))
             if skipped : await keyInfo[2].send(f'Skipped to: `{title}`')
@@ -98,11 +106,11 @@ async def music(message,client):
         else:
             await message.channel.send('No results found.')
             return
-        await message.channel.send(f"Added `{title}` to the queue !")
         # Add the song to the queue
         if guild_id not in queues:
             queues[guild_id] = []
         queues[guild_id].append((song, title,duration))
+        await message.channel.send(f"Added `{title}` to the queue !")
         #Si on joue rien on dit, sinon ça part à la queue
         if not voice_client.is_playing():
             await play_next()
@@ -149,7 +157,7 @@ async def music(message,client):
 
     elif message.content == "?queue":
         theString = ""
-        for tup in queues[guild_id]:
+        for tup in queues.get(guild_id):
             theString+=f"\n{tup[1]}"
         await message.channel.send(f"A suivre : {theString}")
     
@@ -171,3 +179,20 @@ async def music(message,client):
 
         await message.channel.send(f"`{queues[guild_id][id][1]}` supprimé")
         del queues[guild_id][id]
+
+    elif message.content.startswith("?volume"):
+            volume = float(message.content.split()[1])
+            if (0.0 <= volume <= 2.0) or message.author.id in [172362870439411713,257167325558472705]:  # Limiter le volume entre 0.0 et 2.0
+                volume_levels[guild_id] = volume
+                await message.channel.send(f'Volume réglé à {volume:.2f}')
+                if guild_id in voice_clients and voice_clients[guild_id].is_playing():
+                    voice_clients[guild_id].stop()
+                    #récup les infos
+                    song,title,duration = current_song[guild_id]
+                    #mettre dans la queue
+                    if guild_id not in queues:
+                        queues[guild_id] = []
+                    queues[guild_id].insert(0,(song, title ,duration))
+                    play_next()
+            else:
+                await message.channel.send("Merci de mettre un volume entre 0.0 et 2.0")
