@@ -222,6 +222,7 @@ async def music(message,client):
                     if guild_id not in queues:
                         queues[guild_id] = []
                     queues[guild_id].insert(0,(song, title ,duration))
+                    timecode[guild_id] = time.time() - play_start_time.get(guild_id, 0) + (0 if actTimecode.get(guild_id) is None else actTimecode.get(guild_id))
                     await play_next()
             else:
                 await message.channel.send("Merci de mettre un volume entre 0.0 et 2.0")
