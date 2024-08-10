@@ -16,6 +16,7 @@ yt-dlp = "^2024.8.6"
 pytesseract = "^0.3.10"
 pyautogui = "^0.9.54"
 
+pyautogui = "^0.9.54"
 
 [build-system]
 requires = ["poetry-core"]
