@@ -10,18 +10,8 @@ import numpy as np
 import cv2
 import re
 
-# # Chemin vers le binaire Tesseract-OCR (à adapter selon l'installation)
+# Chemin vers le binaire Tesseract-OCR (à adapter selon l'installation)
 pytesseract.pytesseract.tesseract_cmd = r'C:\Users\leotr\AppData\Local\Programs\Tesseract-OCR\tesseract.exe'
-
-# # Capturer une image de l'écran
-# screenshot = pyautogui.screenshot()
-
-# # Enregistrer l'image dans un objet BytesIO
-# image_bytes = io.BytesIO()
-# screenshot.save(image_bytes, format='PNG')
-
-# # Revenir au début du fichier BytesIO
-# image_bytes.seek(0)
 
 def load_words(file_path):
     """Charge la liste de mots depuis un fichier et convertit tous les mots en majuscules."""
@@ -82,16 +72,31 @@ async def resolver(message, content):
         await message.channel.send("Aucun mot trouvé.")
 
 def cleanMsg(extracted_text):
-    # Supprimer les espaces créés automatiquement entre les lettres
+    # Séparer les lignes du texte extrait
     lines = extracted_text.splitlines()
     cleaned_text = []
     for line in lines:
-        # Supprimer les espaces supplémentaires à l'intérieur d'une même ligne
-        cleaned_line = re.sub(r'(?<=\S) (?=\S)', '', line)
+        # Supprimer les espaces
+        cleaned_line = re.sub(r'\s', '', line)
+        # Supprimer les chiffres
+        cleaned_line = re.sub(r'\d', '', cleaned_line)
+        # Supprimer les barres inverses '\'
+        cleaned_line = re.sub(r'\\', '', cleaned_line)
+        # Supprimer les barres obliques '/'
+        cleaned_line = re.sub(r'/', '', cleaned_line)
+        # Supprimer les parenthèses '(' et ')'
+        cleaned_line = re.sub(r'[()]', '', cleaned_line)
+        # Supprimer les crochets '[' et ']'
+        cleaned_line = re.sub(r'[\[\]]', '', cleaned_line)
+        # Supprimer les barres verticales '|'
+        cleaned_line = re.sub(r'\|', '', cleaned_line)
+        # Supprimer les apostrophes
+        cleaned_line = re.sub(r"'", '', cleaned_line)
         # Supprimer les "O" directement devant les "D"
         cleaned_line = re.sub(r'O(?=D)', '', cleaned_line)
         # Supprimer les "2" directement devant les "Z"
         cleaned_line = re.sub(r'2(?=Z)', '', cleaned_line)
+        # Ajouter la ligne nettoyée à la liste
         cleaned_text.append(cleaned_line)
     # Joindre les lignes nettoyées
     final_text = "\n".join(cleaned_text)
@@ -123,12 +128,13 @@ async def jumbledWordsResolver(message):
             # Utiliser pytesseract pour extraire le texte de l'image prétraitée
             extracted_text = pytesseract.image_to_string(img_preprocessed, config=custom_config)
 
-            # Supprime les espaces et les O devant les D
+            # Supprimer les espaces et les caractères indésirables
             extracted_text = cleanMsg(extracted_text)
 
-            #print("Texte extrait:", extracted_text)
+            # Afficher le texte extrait pour le débogage
+            print("Texte extrait:", extracted_text)
 
-            #await message.channel.send(extracted_text)
+            # Envoyer le texte extrait au resolver
             await resolver(message, extracted_text)
 
     if message.channel.id == 1271525568625639566 and not message.attachments:

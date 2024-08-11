@@ -31,7 +31,7 @@ def get_ffmep_options(volume):
 }
 
 
-async def play_next(skipped=False):
+async def play_next(skipped=False, firstSong=False):
     guild_id = keyInfo[1]
     if guild_id in queues and queues[guild_id]:
         url, title, duration = queues[guild_id].pop(0)
@@ -48,8 +48,20 @@ async def play_next(skipped=False):
                 timecode[guild_id] = 0
             # Jouer la chanson et définir la fonction de rappel
             voice_client.play(player, after=lambda e: on_end_callback(e))
-            if skipped : await keyInfo[2].send(f'Skipped to: `{title}`')
-            else: await keyInfo[2].send(f'Now playing: `{title}`')
+
+            playingMessage = f"Playing : {title}" if firstSong else f"Now playing {title}"
+            if skipped : 
+                await keyInfo[2].send(f'Skipped to: `{title}`')
+            else: 
+                thisMBD = None
+                thisMBD=discord.Embed(title="", description="", color=0x6d97cd)
+                file = None
+                file = discord.File("fonctions/resources/musicIcon.png", filename="musicIcon.png")
+                thisMBD.set_author(name='Now Playing', icon_url=('attachment://musicIcon.png'))
+                thisMBD.add_field(name='', value=f"{title} - [``{duration}``]")
+                thisMBD.add_field(name='', value="\u200b", inline=False)
+                thisMBD.set_footer(text=f"{keyInfo[3].author.name}", icon_url=keyInfo[3].author.avatar)
+                await keyInfo[2].send(embed=thisMBD, file=file)
             
         except Exception as e:
             print(e)
@@ -100,6 +112,7 @@ async def music(message,client):
         keyInfo.append(client)#0
         keyInfo.append(guild_id)#1
         keyInfo.append(message.channel)#2
+        keyInfo.append(message)#3
     else:
         keyInfo[0] = client
         keyInfo[1] = guild_id
@@ -132,10 +145,13 @@ async def music(message,client):
         if guild_id not in queues:
             queues[guild_id] = []
         queues[guild_id].append((song, title,duration))
-        await message.channel.send(f"Added `{title}` to the queue !")
+
         #Si on joue rien on dit, sinon ça part à la queue
-        if not voice_client.is_playing():
-            await play_next()
+        if voice_client.is_playing():
+            await message.channel.send(f"Added `{title}` to the queue !")
+        else:
+            await play_next(firstSong=True)
+
 
     elif message.content.startswith("!pause"): # SI on est en pause on est pas considéré comme entrain de jouer donc ça skip si on play
         try:
