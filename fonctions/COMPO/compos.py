@@ -72,11 +72,11 @@ async def challenges_images(message): # Detail
     embed.add_field(name='Ultimes ultimes', value="Gagnez avec un groupe de 5, avec 3+ __ultimes à large zone d'effet__", inline=False)
     file = discord.File("fonctions/COMPO/resources/harmonie/ultime.JPG", filename="ultime.JPG")
     embed.set_image(url='attachment://ultime.JPG')
-  elif chall == "2" or chall == "réanimations" or chall == "Réanimations":
+  elif chall in ["2","réanimations","Réanimations"]:
     embed.add_field(name='Mais tu vas mourir oui ?!', value="Gagnez avec un groupe de 5, avec 3+ __réanimations__", inline=False)
     file = discord.File("fonctions/COMPO/resources/harmonie/mort.JPG", filename="mort.JPG")
     embed.set_image(url='attachment://mort.JPG')
-  elif chall == "3" or chall == "compétences" or chall == "Compétences" or chall == "globales" or chall == "Globales":
+  elif chall in ["3","compétences","Compétences","globales","Globales"]:
     embed.add_field(name='Nulle part où se cacher', value="Gagnez avec un groupe de 5, avec 3+ __compétences globales__", inline=False)
     file = discord.File("fonctions/COMPO/resources/harmonie/global.JPG", filename="global.JPG")
     embed.set_image(url='attachment://global.JPG')
