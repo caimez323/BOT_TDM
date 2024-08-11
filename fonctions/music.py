@@ -43,7 +43,7 @@ def createEmbed():
     newEmbed.set_footer(text=f"{keyInfo[3].author.name}", icon_url=keyInfo[3].author.avatar)
     return newEmbed, file
 
-async def play_next(skipped=False):
+async def play_next(message, skipped=False):
     guild_id = keyInfo[1]
     if guild_id in queues and queues[guild_id]:
         url, title, duration, ytbUrl, channel, author = queues[guild_id].pop(0)
@@ -63,12 +63,12 @@ async def play_next(skipped=False):
             thisEmbed, file = createEmbed()
             thisEmbed.set_author(name='', icon_url=('attachment://musicIcon.png'))
             thisEmbed.add_field(name='', value=f"⏩ **Skipped to**: `{title}` [``{secToMin(duration)}``]")
-            await keyInfo[2].send(embed=thisEmbed)
+            await message.channel.send(embed=thisEmbed)
         else: 
             thisEmbed, file = createEmbed()
             thisEmbed.set_author(name='Now Playing  ♪', icon_url=('attachment://musicIcon.png'))
             thisEmbed.add_field(name='', value=f"[{channel} - {title}]({ytbUrl}) [``{secToMin(duration)}``]")
-            await keyInfo[2].send(embed=thisEmbed, file=file)
+            await message.channel.send(embed=thisEmbed, file=file)
 
 def on_end_callback(error):
     if error:
