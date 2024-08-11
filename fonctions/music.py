@@ -31,13 +31,24 @@ def get_ffmep_options(volume):
     'options': f'-vn -filter:a "volume={volume}"'
 }
 
+def secToMin(secondes):
+    minutes = int(secondes) // 60  # Division entière pour obtenir les minutes
+    secondes_restantes = int(secondes) % 60  # Reste de la division pour obtenir les secondes restantes
+    return f"{minutes}:{secondes_restantes:02d}"  # Formater avec deux chiffres pour les secondes
 
-async def play_next(skipped=False, firstSong=False):
+def createEmbed():
+    newEmbed = discord.Embed(title="", description="", color=0xdb5578)
+    file = discord.File("fonctions/resources/musicIcon.png", filename="musicIcon.png")
+    #thisMBD.add_field(name='', value="\u200b", inline=False)
+    newEmbed.set_footer(text=f"{keyInfo[3].author.name}", icon_url=keyInfo[3].author.avatar)
+    return newEmbed, file
+
+async def play_next(skipped=False):
     guild_id = keyInfo[1]
     if guild_id in queues and queues[guild_id]:
-        url, title, duration = queues[guild_id].pop(0)
+        url, title, duration, ytbUrl, channel, author = queues[guild_id].pop(0)
         #add datas current playing song
-        current_song[guild_id] = [url,title,duration]
+        current_song[guild_id] = [url, title, duration, ytbUrl, channel, author]
         voice_client = voice_clients.get(guild_id)
         play_start_time[guild_id] = time.time()
         volume = volume_levels.get(guild_id, 0.25)
@@ -47,33 +58,17 @@ async def play_next(skipped=False, firstSong=False):
             actTimecode[guild_id] = timecode[guild_id]
             timecode[guild_id] = 0
         # Jouer la chanson et définir la fonction de rappel
-        voice_client.play(player, after=lambda e: on_end_callback(e))
-        if skipped : await keyInfo[2].send(f'Skipped to: `{title}`')
-        else: await keyInfo[2].send(f'Now playing: `{title}`')
-        
-        # try:
-        #     # Préparer le lecteur audio
-        #     player = discord.FFmpegOpusAudio(url, **get_ffmep_options(volume))
-        #     if timecode.get(guild_id) is not None: #cad on a un timecode
-        #         actTimecode[guild_id] = timecode[guild_id]
-        #         timecode[guild_id] = 0
-        #     # Jouer la chanson et définir la fonction de rappel
-        #     voice_client.play(player, after=lambda e: on_end_callback(e))
-
-        #     playingMessage = f"Playing : {title}" if firstSong else f"Now playing {title}"
-        #     if skipped : 
-        #         await keyInfo[2].send(f'Skipped to: `{title}`')
-        #     else: 
-        #         thisMBD = None
-        #         thisMBD=discord.Embed(title="", description="", color=0x6d97cd)
-        #         file = None
-        #         file = discord.File("fonctions/resources/musicIcon.png", filename="musicIcon.png")
-        #         thisMBD.set_author(name='Now Playing', icon_url=('attachment://musicIcon.png'))
-        #         thisMBD.add_field(name='', value=f"{title} - [``{duration}``]")
-        #         thisMBD.add_field(name='', value="\u200b", inline=False)
-        #         thisMBD.set_footer(text=f"{keyInfo[3].author.name}", icon_url=keyInfo[3].author.avatar)
-        #         await keyInfo[2].send(embed=thisMBD, file=file)
-
+        voice_client.play(player, after=lambda e: on_end_callback(e))        
+        if skipped : 
+            thisEmbed, file = createEmbed()
+            thisEmbed.set_author(name='', icon_url=('attachment://musicIcon.png'))
+            thisEmbed.add_field(name='', value=f"⏩ **Skipped to**: `{title}` [``{secToMin(duration)}``]")
+            await keyInfo[2].send(embed=thisEmbed)
+        else: 
+            thisEmbed, file = createEmbed()
+            thisEmbed.set_author(name='Now Playing  ♪', icon_url=('attachment://musicIcon.png'))
+            thisEmbed.add_field(name='', value=f"[{channel} - {title}]({ytbUrl}) [``{secToMin(duration)}``]")
+            await keyInfo[2].send(embed=thisEmbed, file=file)
 
 def on_end_callback(error):
     if error:
@@ -84,20 +79,26 @@ async def nowplaying(message):
     guild_id = keyInfo[1]
     #current_song_data 0 = url, 1 = title, 2 = duration
     current_song_data = current_song[guild_id]
+    title = current_song_data[1]
     duration = current_song_data[2]
+    ytbUrl = current_song_data[3]
+    channel = current_song_data[4]
+    author = current_song_data[5]
     current_position = time.time() - play_start_time.get(guild_id, 0) + (0 if actTimecode.get(guild_id) is None else actTimecode.get(guild_id))
-    remaining_time = duration - current_position
-    await message.channel.send(
-            f"Now playing: {current_song_data[1]}\n"
-            f"Duration: {duration} seconds\n"
-            f"Current Position: {current_position:.0f} seconds\n"
-            f"Remaining Time: {remaining_time:.0f} seconds"
-        )
-    theTrackString=list("`────────────────────`")
-    musicPosition = (int(int(current_position)*20 / int(duration)))
-    theTrackString[musicPosition+1] = "|"
-    await message.channel.send("".join(theTrackString))
+    remaining_time = duration - current_position + 1
+    theTrackString=list("`▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬`")
+    musicPosition = (int(int(current_position)*22 / int(duration)))
+    theTrackString[musicPosition+1] = "🔘"
+    finalTrackString = "".join(theTrackString)
 
+    # Embed
+    thisEmbed, file = createEmbed()
+    thisEmbed.set_author(name='Now Playing  ♪', icon_url=('attachment://musicIcon.png'))
+    thisEmbed.add_field(name='', value=f"[{channel} - {title}]({ytbUrl})", inline=False)
+    thisEmbed.add_field(name='', value=f"{finalTrackString}\n`{secToMin(current_position)}/{secToMin(duration)}`  `({secToMin(remaining_time)} left)`", inline=False)
+    # thisEmbed.add_field(name='', value="\u200b", inline=False)
+    thisEmbed.add_field(name='', value=f"requested by `{author}`", inline=False)
+    await keyInfo[2].send(embed=thisEmbed, file=file)
 
 def time_to_seconds(time_str):
     parts = time_str.split(':')
@@ -125,6 +126,7 @@ async def music(message,client):
         keyInfo[0] = client
         keyInfo[1] = guild_id
         keyInfo[2] = message.channel
+        keyInfo[3] = message
     isPlaylist = False
     if message.content.startswith("!play"):
         waitMessage = None
@@ -147,7 +149,7 @@ async def music(message,client):
         # Si à l'avenir on chercher à ajouter plus de résultat, il faudra toucher ici
         loop = asyncio.get_event_loop()
         if isPlaylist: #playlist
-            data = await asyncio.get_event_loop().run_in_executor(None, lambda: ytdl.extract_info(query, download=False))
+            data = await loop.run_in_executor(None, lambda: ytdl.extract_info(query, download=False))
         else: #classic
             data = await loop.run_in_executor(None, lambda: ytdl.extract_info(f"ytsearch:{query}", download=False))
 
@@ -157,29 +159,31 @@ async def music(message,client):
                     song = elem['url']
                     title = elem['title']
                     duration = elem["duration"]
+                    ytbUrl = elem['original_url']
+                    channel = elem['channel']
                     if guild_id not in queues:
                         queues[guild_id] = []
-                    queues[guild_id].append((song, title,duration))
-                    await message.channel.send(f"Added `{title}` to the queue !")
+                    queues[guild_id].append((song, title, duration, ytbUrl, channel, message.author.name))
+                await message.channel.send(f"Added playlist to the queue !")           
                 await waitMessage.delete()
             else:#one
                 song = data['entries'][0]['url']
                 title = data['entries'][0]['title']
                 duration = data["entries"][0]["duration"]
+                ytbUrl = data["entries"][0]['original_url']
+                channel = data["entries"][0]['channel']
                 if guild_id not in queues:
                     queues[guild_id] = []
-                queues[guild_id].append((song, title,duration))
+                queues[guild_id].append((song, title, duration, ytbUrl, channel, message.author.name))
                 await waitMessage.delete()
-                await message.channel.send(f"Added `{title}` to the queue !")
+                if voice_client.is_playing() : await message.channel.send(f"Added `{title}` to the queue !")                
         else:
             await message.channel.send('No results found.')
             return
         
         #Si on joue rien on dit, sinon ça part à la queue
-        if voice_client.is_playing():
-            await message.channel.send(f"Added `{title}` to the queue !")
-        else:
-            await play_next(firstSong=True)
+        if not voice_client.is_playing():
+            await play_next()
 
 
     elif message.content.startswith("!pause"): # SI on est en pause on est pas considéré comme entrain de jouer donc ça skip si on play
@@ -229,10 +233,29 @@ async def music(message,client):
         if queues.get(guild_id) is None:
             await message.channel.send(f"Queue vide pour l'instant")
             return
-            
+
+        current_song_data = current_song[guild_id]
+        title = current_song_data[1]
+        duration = current_song_data[2]
+        ytbUrl = current_song_data[3]
+        channel = current_song_data[4]
+        thisEmbed, file = createEmbed()
+        thisEmbed.set_author(name='Queue ♪', icon_url=('attachment://musicIcon.png'))
+        thisEmbed.add_field(name='', value=f"**Now Playing:**\n[{channel} - {title}]({ytbUrl}) [``{secToMin(duration)}``]", inline=False)
+        ind = 0
+        value = "**Next Songs:**"    
         for tup in queues.get(guild_id):
-            theString+=f"\n{tup[1]}"
-        await message.channel.send(f"A suivre : {theString}")
+            ind += 1
+            title = tup[1]
+            duration = tup[2]
+            ytbUrl = tup[3]
+            channel = tup[4]
+            author = tup[5]
+            value += f"\n**{ind}.** [{channel} - {title}]({ytbUrl}) [``{secToMin(duration)}``] (by `{author}`)"
+        thisEmbed.add_field(name='', value=value, inline=False)
+        songNbr = "song" if ind == 1 else "songs"
+        thisEmbed.set_footer(text=f"{keyInfo[3].author.name} - Page x/x | {ind} {songNbr} | xx:xx playing time", icon_url=keyInfo[3].author.avatar)
+        await message.channel.send(embed=thisEmbed, file=file)
     
     elif message.content.strip() in ["!np","!nowplaying"]:
         await nowplaying(message)
