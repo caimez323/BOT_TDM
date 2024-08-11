@@ -60,11 +60,12 @@ def secToTime(secondes):
     if heures > 0: return f"{heures}:{minutes:02d}:{secondes_restantes:02d}"  # Afficher heures, minutes, secondes
     else: return f"{minutes}:{secondes_restantes:02d}"  # Afficher seulement minutes, secondes
 
-def createEmbed():
+def createEmbed(author = None):
     newEmbed = discord.Embed(title="", description="", color=0xdb5578)
     file = discord.File("fonctions/resources/musicIcon.png", filename="musicIcon.png")
     #thisMBD.add_field(name='', value="\u200b", inline=False)
-    newEmbed.set_footer(text=f"{keyInfo[3].author.name}", icon_url=keyInfo[3].author.avatar)
+    msgAuthor = keyInfo[3].author if author == None else author
+    newEmbed.set_footer(text=f"{msgAuthor.name}", icon_url=msgAuthor.avatar)
     return newEmbed, file
 
 def truncateTitle(title, channel):
@@ -76,10 +77,10 @@ def truncateTitle(title, channel):
     elif (title_length + channel_length) > max_length:
         available_channel_length = max_length - title_length
         truncated_channel = channel[:(available_channel_length)]
-        musicTitle = f"{title} *({truncated_channel}"
-        musicTitle = musicTitle[:-2] + "*.."
+        musicTitle = f"{title} ({truncated_channel}"
+        musicTitle = musicTitle[:-2] + ".."
     else:
-        musicTitle = f"{title} (*{channel}*)"
+        musicTitle = f"{title} ({channel})"
     return musicTitle
 
 async def play_next(message, skipped=False):
@@ -105,7 +106,7 @@ async def play_next(message, skipped=False):
             await message.channel.send(embed=thisEmbed)
         else: 
             musicTitle = truncateTitle(title,channel)
-            thisEmbed, file = createEmbed()
+            thisEmbed, file = createEmbed(author)
             thisEmbed.set_author(name='Now Playing  ♪', icon_url=('attachment://musicIcon.png'))
             thisEmbed.add_field(name='', value=f"[{musicTitle}]({ytbUrl}) [``{secToTime(duration)}``]")
             await message.channel.send(embed=thisEmbed, file=file)
@@ -123,7 +124,7 @@ async def nowplaying(message):
     duration = current_song_data[2]
     ytbUrl = current_song_data[3]
     channel = current_song_data[4]
-    author = current_song_data[5]
+    author = current_song_data[5].name
     current_position = time.time() - play_start_time.get(guild_id, 0) + (0 if actTimecode.get(guild_id) is None else actTimecode.get(guild_id))
     remaining_time = duration - current_position + 1
     theTrackString=list("`▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬`")
@@ -157,13 +158,12 @@ def helpPagesCreation(message):
     pages = []
     cReturn = 0  
     thisEmbed = None
-    embedMaxLines = 7
 
     title = current_song_data[1]
     duration = current_song_data[2]
     ytbUrl = current_song_data[3]
     channel = current_song_data[4]
-    author = current_song_data[5]
+    author = current_song_data[5].name
     # Now Playing
     musicTitle = truncateTitle(title,channel)
     thisEmbed, file = createEmbed()
@@ -173,6 +173,7 @@ def helpPagesCreation(message):
     # Next Songs
     ind = 0
     sumDuration = 0
+    embedMaxLines = 7
     value = "**Next Songs**"    
     for tup in queues.get(guild_id):
         if cReturn>=embedMaxLines:
@@ -184,7 +185,7 @@ def helpPagesCreation(message):
         duration = tup[2]
         ytbUrl = tup[3]
         channel = tup[4]
-        author = tup[5]
+        author = tup[5].name
         sumDuration += duration
         musicTitle = truncateTitle(title,channel)
         value += f"\n**{ind}.** [{musicTitle}]({ytbUrl}) [``{secToTime(duration)}``] (by `{author}`)"
@@ -193,8 +194,9 @@ def helpPagesCreation(message):
             thisEmbed.add_field(name='', value=value, inline=False)
             pages.append(thisEmbed)
             value = ""
-    thisEmbed.add_field(name='', value=value, inline=False)
-    pages.append(thisEmbed)
+    if cReturn<embedMaxLines:
+        thisEmbed.add_field(name='', value=value, inline=False)
+        pages.append(thisEmbed)
     songNbr = "song" if ind == 1 else "songs"       
     for i, page in enumerate(pages):
         page.set_footer(text=f"{message.author.name} · Page {i + 1}/{len(pages)}  ·  {ind} {songNbr}  ·  {secToTime(sumDuration)} playing time", icon_url=message.author.avatar)
@@ -254,7 +256,7 @@ async def music(message,client):
                     channel = elem['channel']
                     if guild_id not in queues:
                         queues[guild_id] = []
-                    queues[guild_id].append((song, title, duration, ytbUrl, channel, message.author.name))
+                    queues[guild_id].append((song, title, duration, ytbUrl, channel, message.author))
                 await message.channel.send(f"Added playlist to the queue !")           
                 await waitMessage.delete()
             else:#one
@@ -265,7 +267,7 @@ async def music(message,client):
                 channel = data["entries"][0]['channel']
                 if guild_id not in queues:
                     queues[guild_id] = []
-                queues[guild_id].append((song, title, duration, ytbUrl, channel, message.author.name))
+                queues[guild_id].append((song, title, duration, ytbUrl, channel, message.author))
                 await waitMessage.delete()
                 if voice_client.is_playing() : await message.channel.send(f"Added `{title}` to the queue !")                
         else:
@@ -308,7 +310,7 @@ async def music(message,client):
             thisEmbed.add_field(name='', value=f"**Joined** `{channel}`")
             await message.channel.send(embed=thisEmbed, file=file)
 
-    elif message.content.startswith("!pause"): # SI on est en pause on est pas considéré comme entrain de jouer donc ça skip si on play
+    elif message.content.startswith("!pause"):
         try:
             if guild_id in voice_clients and voice_clients[guild_id].is_playing():
                 voice_clients[guild_id].pause()
@@ -372,7 +374,6 @@ async def music(message,client):
         except Exception as e:
             print(e)
             await message.channel.send('An error occurred while stopping the music.')
-
     
     elif message.content.strip() == "!skip":
         if len(queues[guild_id])>0 and voice_clients[guild_id].is_playing():
@@ -417,7 +418,7 @@ async def music(message,client):
             return
         thisEmbed, file = createEmbed()
         thisEmbed.set_author(name='Music  ♪', icon_url=('attachment://musicIcon.png'))
-        thisEmbed.add_field(name='', value=f"`{queues[guild_id][id][1]}` removed from queue")
+        thisEmbed.add_field(name='', value=f"**Removed** `{queues[guild_id][id][1]}` **from queue**")
         await message.channel.send(embed=thisEmbed, file=file)
         del queues[guild_id][id]
 
@@ -425,7 +426,7 @@ async def music(message,client):
             if len(message.content.split())<=1:
                 thisEmbed, file = createEmbed()
                 thisEmbed.set_author(name='Music  ♪', icon_url=('attachment://musicIcon.png'))
-                thisEmbed.add_field(name='', value=f"Merci d'indiquer un volume entre 0.0 et 2.0")
+                thisEmbed.add_field(name='', value=f"Merci d'indiquer un volume entre **0.0 et 2.0**")
                 await message.channel.send(embed=thisEmbed, file=file)
                 return
             volume = float(message.content.split()[1])
@@ -433,7 +434,7 @@ async def music(message,client):
                 volume_levels[guild_id] = volume
                 thisEmbed, file = createEmbed()
                 thisEmbed.set_author(name='Music  ♪', icon_url=('attachment://musicIcon.png'))
-                thisEmbed.add_field(name='', value=f"Volume set to {volume:.2f}")
+                thisEmbed.add_field(name='', value=f"**Volume set to** {volume:.2f}")
                 await message.channel.send(embed=thisEmbed, file=file)
                 if guild_id in voice_clients and voice_clients[guild_id].is_playing():
                     #Stop, re-add in first, replay
@@ -447,7 +448,7 @@ async def music(message,client):
             else:
                 thisEmbed, file = createEmbed()
                 thisEmbed.set_author(name='Music  ♪', icon_url=('attachment://musicIcon.png'))
-                thisEmbed.add_field(name='', value=f"Merci d'indiquer un volume entre 0.0 et 2.0")
+                thisEmbed.add_field(name='', value=f"Merci d'indiquer un volume entre **0.0 et 2.0**")
                 await message.channel.send(embed=thisEmbed, file=file)
     
     elif message.content.startswith("!goto"):
@@ -471,7 +472,7 @@ async def music(message,client):
         if type(timecode[guild_id]) is not int:
             thisEmbed, file = createEmbed()
             thisEmbed.set_author(name='Music  ♪', icon_url=('attachment://musicIcon.png'))
-            thisEmbed.add_field(name='', value=f"**Merci d'indiquer un temps en secondes ou de la forme (xx:xx)**")
+            thisEmbed.add_field(name='', value=f"**Merci d'indiquer un temps en secondes ou de la forme xx:xx**")
             await message.channel.send(embed=thisEmbed, file=file)
             return
         if timecode[guild_id] >= duration:
