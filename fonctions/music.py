@@ -6,7 +6,7 @@ import random
 
 #loop
 #auteur
-#Ajouter autres plateformes & playlist
+#Ajouter autres plateformes
 #afk for too long = deco
 
 #https://github.com/Rapptz/discord.py/issues/6057
@@ -41,20 +41,15 @@ async def play_next(skipped=False):
         voice_client = voice_clients.get(guild_id)
         play_start_time[guild_id] = time.time()
         volume = volume_levels.get(guild_id, 0.25)
-        try:
-            # Préparer le lecteur audio
-            player = discord.FFmpegOpusAudio(url, **get_ffmep_options(volume))
-            if timecode.get(guild_id) is not None: #cad on a un timecode
-                actTimecode[guild_id] = timecode[guild_id]
-                timecode[guild_id] = 0
-            # Jouer la chanson et définir la fonction de rappel
-            voice_client.play(player, after=lambda e: on_end_callback(e))
-            if skipped : await keyInfo[2].send(f'Skipped to: `{title}`')
-            else: await keyInfo[2].send(f'Now playing: `{title}`')
-            
-        except Exception as e:
-            print(e)
-            await keyInfo[2].send('An error occurred while trying to play the next song.')
+        # Préparer le lecteur audio
+        player = discord.FFmpegOpusAudio(url, **get_ffmep_options(volume))
+        if timecode.get(guild_id) is not None: #cad on a un timecode
+            actTimecode[guild_id] = timecode[guild_id]
+            timecode[guild_id] = 0
+        # Jouer la chanson et définir la fonction de rappel
+        voice_client.play(player, after=lambda e: on_end_callback(e))
+        if skipped : await keyInfo[2].send(f'Skipped to: `{title}`')
+        else: await keyInfo[2].send(f'Now playing: `{title}`')
 
 def on_end_callback(error):
     if error:
@@ -105,35 +100,56 @@ async def music(message,client):
         keyInfo[0] = client
         keyInfo[1] = guild_id
         keyInfo[2] = message.channel
-
+    isPlaylist = False
     if message.content.startswith("!play"):
-        
+        waitMessage = None
         # Extract the search query from the message
         query = ' '.join(message.content.split()[1:])  # Join the rest of the message as the query
+        #On va d'abord regarder si c'est pas une playlist
+        if "&list=" in query:
+            isPlaylist = True
+            waitMessage = await message.channel.send("Chargement d'une playlist en cours... cela peut prendre du temps..")
+        else:
+            waitMessage = await message.channel.send("Chargement...")
         # If not connected to a channel, connect to the user's channel
         if guild_id not in voice_clients or not voice_clients[guild_id].is_connected():
             voice_client = await message.author.voice.channel.connect()
             voice_clients[guild_id] = voice_client
         else:
             voice_client = voice_clients[guild_id]
-
             
         # On fait la recherche et on prend le premier lien
         # Si à l'avenir on chercher à ajouter plus de résultat, il faudra toucher ici
         loop = asyncio.get_event_loop()
-        data = await loop.run_in_executor(None, lambda: ytdl.extract_info(f"ytsearch:{query}", download=False))
+        if isPlaylist: #playlist
+            data = await asyncio.get_event_loop().run_in_executor(None, lambda: ytdl.extract_info(query, download=False))
+        else: #classic
+            data = await loop.run_in_executor(None, lambda: ytdl.extract_info(f"ytsearch:{query}", download=False))
+
         if 'entries' in data:
-            song = data['entries'][0]['url']
-            title = data['entries'][0]['title']
-            duration = data["entries"][0]["duration"]
+            if 'entries' in data: #playlist
+                for elem in data["entries"]:
+                    song = elem['url']
+                    title = elem['title']
+                    duration = elem["duration"]
+                    if guild_id not in queues:
+                        queues[guild_id] = []
+                    queues[guild_id].append((song, title,duration))
+                    await message.channel.send(f"Added `{title}` to the queue !")
+                await waitMessage.delete()
+            else:#one
+                song = data['entries'][0]['url']
+                title = data['entries'][0]['title']
+                duration = data["entries"][0]["duration"]
+                if guild_id not in queues:
+                    queues[guild_id] = []
+                queues[guild_id].append((song, title,duration))
+                await waitMessage.delete()
+                await message.channel.send(f"Added `{title}` to the queue !")
         else:
             await message.channel.send('No results found.')
             return
-        # Add the song to the queue
-        if guild_id not in queues:
-            queues[guild_id] = []
-        queues[guild_id].append((song, title,duration))
-        await message.channel.send(f"Added `{title}` to the queue !")
+        
         #Si on joue rien on dit, sinon ça part à la queue
         if not voice_client.is_playing():
             await play_next()
