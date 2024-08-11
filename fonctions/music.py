@@ -183,7 +183,7 @@ async def music(message,client):
         
         #Si on joue rien on dit, sinon ça part à la queue
         if not voice_client.is_playing():
-            await play_next(message)
+            await play_next(message, False)
 
 
     elif message.content.startswith("!pause"): # SI on est en pause on est pas considéré comme entrain de jouer donc ça skip si on play
