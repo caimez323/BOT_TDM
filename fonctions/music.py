@@ -3,6 +3,7 @@ import asyncio
 import yt_dlp
 import time
 import random
+from discord.ui import View
 
 #loop
 #auteur
@@ -11,9 +12,29 @@ import random
 
 #https://github.com/Rapptz/discord.py/issues/6057
 
+class HelperView(View):
+    def __init__(self,pages):
+        super().__init__()
+        self.current_page = 0
+        self.pages = pages
+    
+    @discord.ui.button(label="", style=discord.ButtonStyle.gray,emoji="<:240_Amoa:1017107527961424014>")
+    async def previous_button(self, interaction: discord.Interaction, button: discord.ui.Button):
+        self.current_page = (self.current_page - 1) % len(self.pages)
+        await self.update_message(interaction)
+    
+    @discord.ui.button(label="", style=discord.ButtonStyle.gray,emoji="<:238_Maraiste:1133163882999971991>")
+    async def next_button(self, interaction: discord.Interaction, button: discord.ui.Button):
+        self.current_page = (self.current_page + 1) % len(self.pages)
+        await self.update_message(interaction)
+    
+    async def update_message(self, interaction: discord.Interaction):
+        embed = self.pages[self.current_page]
+        await interaction.response.edit_message(embed=embed, view=self)
 
 queues = {}
 voice_clients = {}
+current_voice_channel = ""
 yt_dl_options = {"format": "bestaudio/best"}
 ytdl = yt_dlp.YoutubeDL(yt_dl_options)
 
@@ -31,10 +52,13 @@ def get_ffmep_options(volume):
     'options': f'-vn -filter:a "volume={volume}"'
 }
 
-def secToMin(secondes):
-    minutes = int(secondes) // 60  # Division entière pour obtenir les minutes
-    secondes_restantes = int(secondes) % 60  # Reste de la division pour obtenir les secondes restantes
-    return f"{minutes}:{secondes_restantes:02d}"  # Formater avec deux chiffres pour les secondes
+def secToTime(secondes):
+    heures = int(secondes) // 3600  # Calculer les heures
+    secondes_restantes = secondes % 3600 # Reste après avoir enlevé les heures
+    minutes = int(secondes_restantes) // 60  # Division entière pour obtenir les minutes
+    secondes_restantes = int(secondes_restantes) % 60  # Reste de la division pour obtenir les secondes restantes
+    if heures > 0: return f"{heures}:{minutes:02d}:{secondes_restantes:02d}"  # Afficher heures, minutes, secondes
+    else: return f"{minutes}:{secondes_restantes:02d}"  # Afficher seulement minutes, secondes
 
 def createEmbed():
     newEmbed = discord.Embed(title="", description="", color=0xdb5578)
@@ -42,6 +66,21 @@ def createEmbed():
     #thisMBD.add_field(name='', value="\u200b", inline=False)
     newEmbed.set_footer(text=f"{keyInfo[3].author.name}", icon_url=keyInfo[3].author.avatar)
     return newEmbed, file
+
+def truncateTitle(title, channel):
+    max_length = 25
+    title_length = len(title)
+    channel_length = len(channel) + 1
+    if title_length >= max_length:
+        musicTitle = title[:max_length] + ".."
+    elif (title_length + channel_length) > max_length:
+        available_channel_length = max_length - title_length
+        truncated_channel = channel[:(available_channel_length)]
+        musicTitle = f"{title} *({truncated_channel}"
+        musicTitle = musicTitle[:-2] + "*.."
+    else:
+        musicTitle = f"{title} (*{channel}*)"
+    return musicTitle
 
 async def play_next(message, skipped=False):
     guild_id = keyInfo[1]
@@ -58,22 +97,23 @@ async def play_next(message, skipped=False):
             actTimecode[guild_id] = timecode[guild_id]
             timecode[guild_id] = 0
         # Jouer la chanson et définir la fonction de rappel
-        voice_client.play(player, after=lambda e: on_end_callback(e))        
+        voice_client.play(player, after=lambda e: on_end_callback(message, e))        
         if skipped : 
             thisEmbed, file = createEmbed()
-            thisEmbed.set_author(name='', icon_url=('attachment://musicIcon.png'))
-            thisEmbed.add_field(name='', value=f"⏩ **Skipped to**: `{title}` [``{secToMin(duration)}``]")
+            thisEmbed.set_author(name='Music  ♪', icon_url=('attachment://musicIcon.png'))
+            thisEmbed.add_field(name='', value=f"⏩ **Skipped to** `{title}` [``{secToTime(duration)}``]")
             await message.channel.send(embed=thisEmbed)
         else: 
+            musicTitle = truncateTitle(title,channel)
             thisEmbed, file = createEmbed()
             thisEmbed.set_author(name='Now Playing  ♪', icon_url=('attachment://musicIcon.png'))
-            thisEmbed.add_field(name='', value=f"[{channel} - {title}]({ytbUrl}) [``{secToMin(duration)}``]")
+            thisEmbed.add_field(name='', value=f"[{musicTitle}]({ytbUrl}) [``{secToTime(duration)}``]")
             await message.channel.send(embed=thisEmbed, file=file)
 
-def on_end_callback(error):
+def on_end_callback(message, error):
     if error:
         print(f"An error occurred: {error}")
-    asyncio.run_coroutine_threadsafe(play_next(), keyInfo[0].loop)
+    asyncio.run_coroutine_threadsafe(play_next(message), keyInfo[0].loop)
 
 async def nowplaying(message):
     guild_id = keyInfo[1]
@@ -94,8 +134,8 @@ async def nowplaying(message):
     # Embed
     thisEmbed, file = createEmbed()
     thisEmbed.set_author(name='Now Playing  ♪', icon_url=('attachment://musicIcon.png'))
-    thisEmbed.add_field(name='', value=f"[{channel} - {title}]({ytbUrl})", inline=False)
-    thisEmbed.add_field(name='', value=f"{finalTrackString}\n`{secToMin(current_position)}/{secToMin(duration)}`  `({secToMin(remaining_time)} left)`", inline=False)
+    thisEmbed.add_field(name='', value=f"[{title} (*{channel}*)]({ytbUrl})", inline=False)
+    thisEmbed.add_field(name='', value=f"{finalTrackString}\n`{secToTime(current_position)}/{secToTime(duration)}`  `({secToTime(remaining_time)} left)`", inline=False)
     # thisEmbed.add_field(name='', value="\u200b", inline=False)
     thisEmbed.add_field(name='', value=f"requested by `{author}`", inline=False)
     await keyInfo[2].send(embed=thisEmbed, file=file)
@@ -109,6 +149,56 @@ def time_to_seconds(time_str):
         return int(parts[0])
     else:
         raise ValueError("Invalid time format. Use 'minutes:seconds' or 'seconds'.")
+
+def helpPagesCreation(message): 
+    guild_id = message.guild.id
+    current_song_data = current_song[guild_id]   
+    #page c'est une liste d'embed
+    pages = []
+    cReturn = 0  
+    thisEmbed = None
+    embedMaxLines = 7
+
+    title = current_song_data[1]
+    duration = current_song_data[2]
+    ytbUrl = current_song_data[3]
+    channel = current_song_data[4]
+    author = current_song_data[5]
+    # Now Playing
+    musicTitle = truncateTitle(title,channel)
+    thisEmbed, file = createEmbed()
+    thisEmbed.set_author(name='Queue ♪', icon_url=('attachment://musicIcon.png'))
+    thisEmbed.add_field(name='', value=f"**Now Playing**\n[{musicTitle}]({ytbUrl}) [``{secToTime(duration)}``] (by `{author}`)", inline=False)
+    cReturn += 2
+    # Next Songs
+    ind = 0
+    sumDuration = 0
+    value = "**Next Songs**"    
+    for tup in queues.get(guild_id):
+        if cReturn>=embedMaxLines:
+            cReturn = 0
+            thisEmbed, file = createEmbed()
+            thisEmbed.set_author(name='Queue ♪', icon_url=('attachment://musicIcon.png'))
+        ind += 1
+        title = tup[1]
+        duration = tup[2]
+        ytbUrl = tup[3]
+        channel = tup[4]
+        author = tup[5]
+        sumDuration += duration
+        musicTitle = truncateTitle(title,channel)
+        value += f"\n**{ind}.** [{musicTitle}]({ytbUrl}) [``{secToTime(duration)}``] (by `{author}`)"
+        cReturn += 1
+        if cReturn>=embedMaxLines:
+            thisEmbed.add_field(name='', value=value, inline=False)
+            pages.append(thisEmbed)
+            value = ""
+    thisEmbed.add_field(name='', value=value, inline=False)
+    pages.append(thisEmbed)
+    songNbr = "song" if ind == 1 else "songs"       
+    for i, page in enumerate(pages):
+        page.set_footer(text=f"{message.author.name} · Page {i + 1}/{len(pages)}  ·  {ind} {songNbr}  ·  {secToTime(sumDuration)} playing time", icon_url=message.author.avatar)
+    return pages, file
     
 #==============================================
 #=============      START             =========
@@ -116,6 +206,7 @@ def time_to_seconds(time_str):
 
 async def music(message,client):
     global queues
+    global current_voice_channel
     guild_id = message.guild.id
     if len(keyInfo) != 4: #not setup yet:
         keyInfo.append(client)#0
@@ -128,14 +219,14 @@ async def music(message,client):
         keyInfo[2] = message.channel
         keyInfo[3] = message
     isPlaylist = False
-    if message.content.startswith("!play"):
+    if message.content.startswith(("!play", "!p")):
         waitMessage = None
         # Extract the search query from the message
         query = ' '.join(message.content.split()[1:])  # Join the rest of the message as the query
         #On va d'abord regarder si c'est pas une playlist
         if "&list=" in query:
             isPlaylist = True
-            waitMessage = await message.channel.send("Chargement d'une playlist en cours... cela peut prendre du temps..")
+            waitMessage = await message.channel.send("Chargement d'une playlist en cours.. cela peut prendre du temps..")
         else:
             waitMessage = await message.channel.send("Chargement...")
         # If not connected to a channel, connect to the user's channel
@@ -185,14 +276,56 @@ async def music(message,client):
         if not voice_client.is_playing():
             await play_next(message, False)
 
+    elif message.content.lower() == "!join":
+        guild_id = message.guild.id
+        channel = message.author.voice.channel
+        # If not connected to a channel, connect to the user's channel
+        if (guild_id not in voice_clients or not voice_clients[guild_id].is_connected()):
+            current_voice_channel = message.author.voice.channel
+            voice_client = await message.author.voice.channel.connect()
+            voice_clients[guild_id] = voice_client
+            thisEmbed, file = createEmbed()
+            thisEmbed.set_author(name='Music  ♪', icon_url=('attachment://musicIcon.png'))
+            thisEmbed.add_field(name='', value=f"**Joined** `{channel}`")
+            await message.channel.send(embed=thisEmbed, file=file)
+        elif channel == current_voice_channel:
+            voice_client = voice_clients[guild_id]
+            thisEmbed, file = createEmbed()
+            thisEmbed.set_author(name='Music  ♪', icon_url=('attachment://musicIcon.png'))
+            thisEmbed.add_field(name='', value=f"**Already joined** `{channel}`")
+            await message.channel.send(embed=thisEmbed, file=file)
+        else:
+            # leave
+            voice_clients[guild_id].stop()
+            await voice_clients[guild_id].disconnect()
+            del voice_clients[guild_id]
+            # reconnect
+            current_voice_channel = message.author.voice.channel
+            voice_client = await message.author.voice.channel.connect()
+            voice_clients[guild_id] = voice_client
+            thisEmbed, file = createEmbed()
+            thisEmbed.set_author(name='Music  ♪', icon_url=('attachment://musicIcon.png'))
+            thisEmbed.add_field(name='', value=f"**Joined** `{channel}`")
+            await message.channel.send(embed=thisEmbed, file=file)
 
     elif message.content.startswith("!pause"): # SI on est en pause on est pas considéré comme entrain de jouer donc ça skip si on play
         try:
             if guild_id in voice_clients and voice_clients[guild_id].is_playing():
                 voice_clients[guild_id].pause()
-                await message.channel.send('Playback paused.')
+                thisEmbed, file = createEmbed()
+                thisEmbed.set_author(name='Music  ♪', icon_url=('attachment://musicIcon.png'))
+                thisEmbed.add_field(name='', value=f"**Music paused**")
+                await message.channel.send(embed=thisEmbed, file=file)
+            elif guild_id in voice_clients:
+                thisEmbed, file = createEmbed()
+                thisEmbed.set_author(name='Music  ♪', icon_url=('attachment://musicIcon.png'))
+                thisEmbed.add_field(name='', value=f"**Music not currently playing**")
+                await message.channel.send(embed=thisEmbed, file=file)
             else:
-                await message.channel.send('No music is playing.')
+                thisEmbed, file = createEmbed()
+                thisEmbed.set_author(name='Music  ♪', icon_url=('attachment://musicIcon.png'))
+                thisEmbed.add_field(name='', value=f"**Not in a voice channel**")
+                await message.channel.send(embed=thisEmbed, file=file)
         except Exception as e:
             print(e)
             await message.channel.send('An error occurred while pausing the music.')
@@ -201,23 +334,41 @@ async def music(message,client):
         try:
             if guild_id in voice_clients and voice_clients[guild_id].is_paused():
                 voice_clients[guild_id].resume()
-                await message.channel.send('Playback resumed.')
+                thisEmbed, file = createEmbed()
+                thisEmbed.set_author(name='Music  ♪', icon_url=('attachment://musicIcon.png'))
+                thisEmbed.add_field(name='', value=f"**Music resumed**")
+                await message.channel.send(embed=thisEmbed, file=file)
+            elif guild_id in voice_clients:
+                thisEmbed, file = createEmbed()
+                thisEmbed.set_author(name='Music  ♪', icon_url=('attachment://musicIcon.png'))
+                thisEmbed.add_field(name='', value=f"**Music not in pause")
+                await message.channel.send(embed=thisEmbed, file=file)
             else:
-                await message.channel.send('Music is not paused.')
+                thisEmbed, file = createEmbed()
+                thisEmbed.set_author(name='Music  ♪', icon_url=('attachment://musicIcon.png'))
+                thisEmbed.add_field(name='', value=f"**Not in a voice channel**")
+                await message.channel.send(embed=thisEmbed, file=file)
         except Exception as e:
             print(e)
             await message.channel.send('An error occurred while resuming the music.')
 
     elif message.content.strip() in ["!stop","!leave"]:
         queues = {}
+        channel = message.author.voice.channel
         try:
             if guild_id in voice_clients:
                 voice_clients[guild_id].stop()
                 await voice_clients[guild_id].disconnect()
                 del voice_clients[guild_id]
-                await message.channel.send('Playback stopped and disconnected.')
+                thisEmbed, file = createEmbed()
+                thisEmbed.set_author(name='Music  ♪', icon_url=('attachment://musicIcon.png'))
+                thisEmbed.add_field(name='', value=f"**Disconnected from** `{channel}`")
+                await message.channel.send(embed=thisEmbed, file=file)
             else:
-                await message.channel.send('No music is playing.')
+                thisEmbed, file = createEmbed()
+                thisEmbed.set_author(name='Music  ♪', icon_url=('attachment://musicIcon.png'))
+                thisEmbed.add_field(name='', value=f"**Not in a voice channel**")
+                await message.channel.send(embed=thisEmbed, file=file)
         except Exception as e:
             print(e)
             await message.channel.send('An error occurred while stopping the music.')
@@ -226,63 +377,64 @@ async def music(message,client):
     elif message.content.strip() == "!skip":
         if len(queues[guild_id])>0 and voice_clients[guild_id].is_playing():
             voice_clients[guild_id].stop()
-            await play_next(skipped=True)
+            await play_next(message, skipped=True)
 
     elif message.content.strip() == "!queue":
-        theString = ""
-        if queues.get(guild_id) is None:
-            await message.channel.send(f"Queue vide pour l'instant")
+        getQueues = queues.get(guild_id)
+        if getQueues is None or getQueues == []:
+            thisEmbed, file = createEmbed()
+            thisEmbed.set_author(name='Music  ♪', icon_url=('attachment://musicIcon.png'))
+            thisEmbed.add_field(name='', value=f"**Queue is empty**")
+            await message.channel.send(embed=thisEmbed, file=file)
             return
 
-        current_song_data = current_song[guild_id]
-        title = current_song_data[1]
-        duration = current_song_data[2]
-        ytbUrl = current_song_data[3]
-        channel = current_song_data[4]
-        thisEmbed, file = createEmbed()
-        thisEmbed.set_author(name='Queue ♪', icon_url=('attachment://musicIcon.png'))
-        thisEmbed.add_field(name='', value=f"**Now Playing:**\n[{channel} - {title}]({ytbUrl}) [``{secToMin(duration)}``]", inline=False)
-        ind = 0
-        value = "**Next Songs:**"    
-        for tup in queues.get(guild_id):
-            ind += 1
-            title = tup[1]
-            duration = tup[2]
-            ytbUrl = tup[3]
-            channel = tup[4]
-            author = tup[5]
-            value += f"\n**{ind}.** [{channel} - {title}]({ytbUrl}) [``{secToMin(duration)}``] (by `{author}`)"
-        thisEmbed.add_field(name='', value=value, inline=False)
-        songNbr = "song" if ind == 1 else "songs"
-        thisEmbed.set_footer(text=f"{keyInfo[3].author.name} - Page x/x | {ind} {songNbr} | xx:xx playing time", icon_url=keyInfo[3].author.avatar)
-        await message.channel.send(embed=thisEmbed, file=file)
-    
+        pages,file = helpPagesCreation(message)
+        await message.channel.send(embed=pages[0],view = HelperView(pages), file=file)     
+         
     elif message.content.strip() in ["!np","!nowplaying"]:
         await nowplaying(message)
     
     elif message.content.strip() == "!shuffle":
         random.shuffle(queues[guild_id])
-        await message.channel.send("Queue mélangée !")
+        thisEmbed, file = createEmbed()
+        thisEmbed.set_author(name='Music  ♪', icon_url=('attachment://musicIcon.png'))
+        thisEmbed.add_field(name='', value=f"**Queue has been successfully shuffled !**")
+        await message.channel.send(embed=thisEmbed, file=file)
 
     elif message.content.startswith("!remove"):
         if len(message.content.split())!=2:
-            await message.channel.send("Merci d'envoyer un numéro à supprimer")
+            thisEmbed, file = createEmbed()
+            thisEmbed.set_author(name='Music  ♪', icon_url=('attachment://musicIcon.png'))
+            thisEmbed.add_field(name='', value=f"Merci de préciser le **numéro** de la musique à supprimer de la **queue**")
+            await message.channel.send(embed=thisEmbed, file=file)
             return
         id = int(message.content.split()[1])-1
         if len(queues[guild_id])<= id:
-            await message.channel.send("Merci d'indiquer un nombre correct")
+            thisEmbed, file = createEmbed()
+            thisEmbed.set_author(name='Music  ♪', icon_url=('attachment://musicIcon.png'))
+            thisEmbed.add_field(name='', value=f"Merci d'indiquer un numéro correct de la **queue**")
+            await message.channel.send(embed=thisEmbed, file=file)
             return
-        await message.channel.send(f"`{queues[guild_id][id][1]}` supprimé")
+        thisEmbed, file = createEmbed()
+        thisEmbed.set_author(name='Music  ♪', icon_url=('attachment://musicIcon.png'))
+        thisEmbed.add_field(name='', value=f"`{queues[guild_id][id][1]}` removed from queue")
+        await message.channel.send(embed=thisEmbed, file=file)
         del queues[guild_id][id]
 
     elif message.content.startswith("!volume"):
             if len(message.content.split())<=1:
-                await message.channel.send("Merci de mettre un volume entre 0.0 et 2.0")
+                thisEmbed, file = createEmbed()
+                thisEmbed.set_author(name='Music  ♪', icon_url=('attachment://musicIcon.png'))
+                thisEmbed.add_field(name='', value=f"Merci d'indiquer un volume entre 0.0 et 2.0")
+                await message.channel.send(embed=thisEmbed, file=file)
                 return
             volume = float(message.content.split()[1])
             if (0.0 <= volume <= 2.0) or message.author.id in [172362870439411713,257167325558472705]:  # Limiter le volume entre 0.0 et 2.0
                 volume_levels[guild_id] = volume
-                await message.channel.send(f'Volume réglé à {volume:.2f}')
+                thisEmbed, file = createEmbed()
+                thisEmbed.set_author(name='Music  ♪', icon_url=('attachment://musicIcon.png'))
+                thisEmbed.add_field(name='', value=f"Volume set to {volume:.2f}")
+                await message.channel.send(embed=thisEmbed, file=file)
                 if guild_id in voice_clients and voice_clients[guild_id].is_playing():
                     #Stop, re-add in first, replay
                     voice_clients[guild_id].stop()
@@ -291,9 +443,12 @@ async def music(message,client):
                         queues[guild_id] = []
                     queues[guild_id].insert(0,(song, title ,duration))
                     timecode[guild_id] = time.time() - play_start_time.get(guild_id, 0) + (0 if actTimecode.get(guild_id) is None else actTimecode.get(guild_id))
-                    await play_next()
+                    await play_next(message)
             else:
-                await message.channel.send("Merci de mettre un volume entre 0.0 et 2.0")
+                thisEmbed, file = createEmbed()
+                thisEmbed.set_author(name='Music  ♪', icon_url=('attachment://musicIcon.png'))
+                thisEmbed.add_field(name='', value=f"Merci d'indiquer un volume entre 0.0 et 2.0")
+                await message.channel.send(embed=thisEmbed, file=file)
     
     elif message.content.startswith("!goto"):
         if len(message.content.split())<=1:
@@ -307,14 +462,26 @@ async def music(message,client):
                 queues[guild_id] = []
             queues[guild_id].insert(0,(song, title ,duration))
         else: # si on joue pas c'est inutile
-            await message.channel.send("Aucune musique ne cours")
+            thisEmbed, file = createEmbed()
+            thisEmbed.set_author(name='Music  ♪', icon_url=('attachment://musicIcon.png'))
+            thisEmbed.add_field(name='', value=f"**Music not currently playing**")
+            await message.channel.send(embed=thisEmbed, file=file)
             return
         timecode[guild_id] = time_to_seconds(message.content.split()[1])
         if type(timecode[guild_id]) is not int:
-            await message.channel.send("Merci de mettre un temps en secondes")
+            thisEmbed, file = createEmbed()
+            thisEmbed.set_author(name='Music  ♪', icon_url=('attachment://musicIcon.png'))
+            thisEmbed.add_field(name='', value=f"**Merci d'indiquer un temps en secondes ou de la forme (xx:xx)**")
+            await message.channel.send(embed=thisEmbed, file=file)
             return
         if timecode[guild_id] >= duration:
-            await message.channel.send(f"Merci de mettre un temps compris dans la musique (`{duration}`)")
+            thisEmbed, file = createEmbed()
+            thisEmbed.set_author(name='Music  ♪', icon_url=('attachment://musicIcon.png'))
+            thisEmbed.add_field(name='', value=f"**Merci d'indiquer un temps inférieur à la durée de la musique (`{secToTime(duration)}`)**")
+            await message.channel.send(embed=thisEmbed, file=file)
             return
-        await message.channel.send(f"Musique mise à `{timecode[guild_id]}`")
-        await play_next()
+        thisEmbed, file = createEmbed()
+        thisEmbed.set_author(name='Music  ♪', icon_url=('attachment://musicIcon.png'))
+        thisEmbed.add_field(name='', value=f"**Music set to `{timecode[guild_id]}`**")
+        await message.channel.send(embed=thisEmbed, file=file)
+        await play_next(message)
