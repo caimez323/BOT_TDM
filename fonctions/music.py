@@ -542,3 +542,4 @@ async def music(message,client):
         thisEmbed.set_author(name='Music  ♪', icon_url=('attachment://musicIcon.png'))
         thisEmbed.add_field(name='', value=f"**Music set to `{secToTime(timecode[guild_id])}`**")
         await message.channel.send(embed=thisEmbed, file=file)
+    

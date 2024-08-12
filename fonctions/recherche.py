@@ -1,6 +1,7 @@
 import urllib.parse, urllib.request, re
 from pytube import YouTube
 import discord
+from discord.ext import commands
 from discord.ui import View, Button
 
 #===============
@@ -75,10 +76,31 @@ async def pp(message):
     await message.channel.send("Merci d'indiquer un utilisateur correct")
 
 #===============
+
+
+
+async def cherche_kopain(message):
+  BOTID = [850798626946809867,1269278012864594061]
+  messageArgs = message.content.split()[1:]
+  mention,deranger = False,False
+  if("-m" in messageArgs):
+     mention = True
+  if("-d" in messageArgs):
+     deranger = True
+  if deranger:
+    online_members = [member for member in message.guild.members if message.channel.permissions_for(member).read_messages and member.id not in BOTID and member.status in {discord.Status.online, discord.Status.idle, discord.Status.dnd}]
+  else:
+    online_members = [member for member in message.guild.members if message.channel.permissions_for(member).read_messages and member.id not in BOTID and member.status in {discord.Status.online, discord.Status.idle}]
+
+  Ts = "Voici la liste des utilisateurs susceptibles d'être ligne :\n"
+  for m in online_members:
+    Ts+= ("<@{}>\n".format(str(m.id)) if mention else "{}\n".format(str(m.name)))
+  await message.channel.send(Ts)
 #===============
 
 async def recherche(message):
     if message.content.lower() == "!w2g": await w2g(message)
     if message.content.startswith("!pp"): await pp(message)
     if message.content.startswith("!ytb"): await youtube_search(message)
+    if message.content.startswith("!kop1"): await cherche_kopain(message)
     # if message.content.startswith("!clash"): await clash(message, client)
