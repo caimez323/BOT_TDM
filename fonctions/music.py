@@ -40,7 +40,7 @@ voice_clients = {}
 current_voice_channel = ""
 yt_dl_options = {"format": "bestaudio/best"}
 ytdl = yt_dlp.YoutubeDL(yt_dl_options)
-goto = True
+goto = False
 
 keyInfo = []
 current_song = {}
@@ -266,12 +266,9 @@ async def music(message,client):
             data = await loop.run_in_executor(None, lambda: ytdl.extract_info(query, download=False))
         else: #classic
             data = await loop.run_in_executor(None, lambda: ytdl.extract_info(f"ytsearch:{query}", download=False))
-        ind = 0
         if 'entries' in data:
             if isPlaylist: #playlist
                 for elem in data["entries"]:
-                    ind += 1
-                    #if ind == 1: print(elem)
                     song = elem['url']
                     title = elem['title']
                     duration = elem["duration"]
