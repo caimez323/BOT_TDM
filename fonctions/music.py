@@ -104,7 +104,7 @@ async def play_next(message, skipped=False):
             timecode[guild_id] = 0
         # Jouer la chanson et définir la fonction de rappel
         voice_client.play(player, after=lambda e: on_end_callback(message, e))     
-        if skipped : 
+        if skipped:
             thisEmbed, file = createEmbed()
             thisEmbed.set_author(name='Skipped to ⏩', icon_url=('attachment://musicIcon.png'))
             thisEmbed.description = f"[{title}]({ytbUrl})"
@@ -266,10 +266,9 @@ async def music(message,client):
             data = await loop.run_in_executor(None, lambda: ytdl.extract_info(query, download=False))
         else: #classic
             data = await loop.run_in_executor(None, lambda: ytdl.extract_info(f"ytsearch:{query}", download=False))
-
         ind = 0
         if 'entries' in data:
-            if 'entries' in data: #playlist
+            if isPlaylist: #playlist
                 for elem in data["entries"]:
                     ind += 1
                     #if ind == 1: print(elem)
