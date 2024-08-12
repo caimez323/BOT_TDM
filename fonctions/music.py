@@ -242,7 +242,7 @@ async def music(message,client):
         keyInfo[2] = message.channel
         keyInfo[3] = message
     isPlaylist = False
-    if message.content.startswith(("!play", "!p")):
+    if message.content.startswith(("!play", "!p ")):
         waitMessage = None
         # Extract the search query from the message
         query = ' '.join(message.content.split()[1:])  # Join the rest of the message as the query
@@ -361,26 +361,19 @@ async def music(message,client):
             await message.channel.send(embed=thisEmbed, file=file)
 
     elif message.content.startswith("!pause"):
-        try:
-            if guild_id in voice_clients and voice_clients[guild_id].is_playing():
-                voice_clients[guild_id].pause()
-                thisEmbed, file = createEmbed()
-                thisEmbed.set_author(name='Music  ♪', icon_url=('attachment://musicIcon.png'))
-                thisEmbed.add_field(name='', value=f"**Music paused** ▶️")
-                await message.channel.send(embed=thisEmbed, file=file)
-            elif guild_id in voice_clients:
-                thisEmbed, file = createEmbed()
-                thisEmbed.set_author(name='Music  ♪', icon_url=('attachment://musicIcon.png'))
-                thisEmbed.add_field(name='', value=f"**Not currently playing**")
-                await message.channel.send(embed=thisEmbed, file=file)
-            else:
-                thisEmbed, file = createEmbed()
-                thisEmbed.set_author(name='Music  ♪', icon_url=('attachment://musicIcon.png'))
-                thisEmbed.add_field(name='', value=f"**Not in a voice channel**")
-                await message.channel.send(embed=thisEmbed, file=file)
-        except Exception as e:
-            print(e)
-            await message.channel.send('An error occurred while pausing the music.')
+        thisEmbed, file = createEmbed()
+        thisEmbed.set_author(name='Music  ♪', icon_url=('attachment://musicIcon.png'))
+        if guild_id in voice_clients and voice_clients[guild_id].is_playing(): # Si on joue
+            voice_clients[guild_id].pause()
+            thisEmbed.add_field(name='', value=f"**Music paused** ▶️")
+            await message.channel.send(embed=thisEmbed, file=file)
+        elif guild_id in voice_clients:
+            thisEmbed.add_field(name='', value=f"**Not currently playing**")
+            await message.channel.send(embed=thisEmbed, file=file)
+        else:
+            thisEmbed.add_field(name='', value=f"**Not in a voice channel**")
+            await message.channel.send(embed=thisEmbed, file=file)
+
 
     elif message.content.startswith("!resume"):
         try:
