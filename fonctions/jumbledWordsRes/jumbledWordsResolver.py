@@ -105,10 +105,10 @@ def cleanMsg(extracted_text):
 async def jumbledWordsResolver(message):
     if (message.content.lower().startswith("!jb") and message.attachments) or (message.attachments and message.channel.id == 1271525568625639566):
         for attachment in message.attachments:
+            print("image")
             image_url = attachment.url
             response = requests.get(image_url)
             img = Image.open(BytesIO(response.content))
-
 
             # Convertir l'image PIL en format numpy pour utiliser OpenCV
             img_cv = np.array(img)
@@ -117,7 +117,7 @@ async def jumbledWordsResolver(message):
             gray = cv2.cvtColor(img_cv, cv2.COLOR_BGR2GRAY)
 
             # (Optionnel) Sauvegarder l'image pour voir le résultat
-            cv2.imwrite('gray_image.png', gray)
+            #cv2.imwrite('gray_image.png', gray)
 
             # Convertir l'image traitée de retour au format PIL
             img_preprocessed = Image.fromarray(gray)
@@ -132,10 +132,10 @@ async def jumbledWordsResolver(message):
             extracted_text = cleanMsg(extracted_text)
 
             # Afficher le texte extrait pour le débogage
-            print("Texte extrait:", extracted_text)
+            await message.channel.send(extracted_text)
 
             # Envoyer le texte extrait au resolver
-            await resolver(message, extracted_text)
+            #await resolver(message, extracted_text)
 
     if message.channel.id == 1271525568625639566 and not message.attachments:
         await resolver(message, message.content)

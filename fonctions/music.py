@@ -6,9 +6,12 @@ import random
 from discord.ui import View
 
 #loop
-#auteur
-#Ajouter autres plateformes
+#auteur => Fait
+#Ajouter autres plateformes (deezer / spotify)
 #afk for too long = deco
+#pour les playlist, faire jouer la 1ère pendant que les autres chargent
+#ajouter activité du bot quand il est en train de play
+#ajouter sur son profil, la musique qu'il est en train de jouer (comme le fait spotify). Si c'est possible ?
 
 #https://github.com/Rapptz/discord.py/issues/6057
 
@@ -88,9 +91,9 @@ async def play_next(message, skipped=False):
     global goto
     guild_id = keyInfo[1]
     if guild_id in queues and queues[guild_id]:
-        url, title, duration, ytbUrl, channel, author = queues[guild_id].pop(0)
+        url, title, duration, ytbUrl, channel, thumbnail, author = queues[guild_id].pop(0)
         #add datas current playing song
-        current_song[guild_id] = [url, title, duration, ytbUrl, channel, author]
+        current_song[guild_id] = [url, title, duration, ytbUrl, channel, thumbnail, author]
         voice_client = voice_clients.get(guild_id)
         play_start_time[guild_id] = time.time()
         volume = volume_levels.get(guild_id, 0.25)
@@ -103,15 +106,20 @@ async def play_next(message, skipped=False):
         voice_client.play(player, after=lambda e: on_end_callback(message, e))     
         if skipped : 
             thisEmbed, file = createEmbed()
-            thisEmbed.set_author(name='Music  ♪', icon_url=('attachment://musicIcon.png'))
-            thisEmbed.add_field(name='', value=f"⏩ **Skipped to** `{title}` [``{secToTime(duration)}``]")
-            await message.channel.send(embed=thisEmbed)
+            thisEmbed.set_author(name='Skipped to ⏩', icon_url=('attachment://musicIcon.png'))
+            thisEmbed.description = f"[{title}]({ytbUrl})"
+            thisEmbed.add_field(name='Channel', value=f"{channel}", inline = True)
+            thisEmbed.add_field(name='Song Duration', value=f"{secToTime(duration)}", inline = True)
+            thisEmbed.set_thumbnail(url=thumbnail)
+            await message.channel.send(embed=thisEmbed, file=file)  
         elif not goto :
-            musicTitle = truncateTitle(title,channel)
-            thisEmbed, file = createEmbed(author)
-            thisEmbed.set_author(name='Now Playing  ♪', icon_url=('attachment://musicIcon.png'))
-            thisEmbed.add_field(name='', value=f"[{musicTitle}]({ytbUrl}) [``{secToTime(duration)}``]")
-            await message.channel.send(embed=thisEmbed, file=file)
+            thisEmbed, file = createEmbed()
+            thisEmbed.set_author(name='Playing ♪', icon_url=('attachment://musicIcon.png'))
+            thisEmbed.description = f"[{title}]({ytbUrl})"
+            thisEmbed.add_field(name='Channel', value=f"{channel}", inline = True)
+            thisEmbed.add_field(name='Song Duration', value=f"{secToTime(duration)}", inline = True)
+            thisEmbed.set_thumbnail(url=thumbnail)
+            await message.channel.send(embed=thisEmbed, file=file)  
         goto = False
 
 def on_end_callback(message, error):
@@ -127,7 +135,8 @@ async def nowplaying(message):
     duration = current_song_data[2]
     ytbUrl = current_song_data[3]
     channel = current_song_data[4]
-    author = current_song_data[5].name
+    thumbnail = current_song_data[5]
+    author = current_song_data[6].name
     current_position = time.time() - play_start_time.get(guild_id, 0) + (0 if actTimecode.get(guild_id) is None else actTimecode.get(guild_id))
     remaining_time = duration - current_position + 1
     theTrackString=list("`▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬`")
@@ -136,13 +145,19 @@ async def nowplaying(message):
     finalTrackString = "".join(theTrackString)
 
     # Embed
+    # thisEmbed.add_field(name='', value=f"{finalTrackString}\n`{secToTime(current_position)}/{secToTime(duration)}`  `({secToTime(remaining_time)} left)`", inline=False)
+    # thisEmbed.add_field(name='', value=f"requested by `{author}`", inline=False)
+    # thisEmbed.set_thumbnail(url=thumbnail)
+    # await keyInfo[2].send(embed=thisEmbed, file=file)
     thisEmbed, file = createEmbed()
-    thisEmbed.set_author(name='Now Playing  ♪', icon_url=('attachment://musicIcon.png'))
-    thisEmbed.add_field(name='', value=f"[{title} (*{channel}*)]({ytbUrl})", inline=False)
-    thisEmbed.add_field(name='', value=f"{finalTrackString}\n`{secToTime(current_position)}/{secToTime(duration)}`  `({secToTime(remaining_time)} left)`", inline=False)
-    # thisEmbed.add_field(name='', value="\u200b", inline=False)
-    thisEmbed.add_field(name='', value=f"requested by `{author}`", inline=False)
-    await keyInfo[2].send(embed=thisEmbed, file=file)
+    thisEmbed.set_author(name='Now Playing ♪', icon_url=('attachment://musicIcon.png'))
+    thisEmbed.description = f"[{title}]({ytbUrl})"
+    thisEmbed.add_field(name='Channel', value=f"{channel}", inline = True)
+    thisEmbed.add_field(name='Time left', value=f"{secToTime(remaining_time)}", inline = True)
+    thisEmbed.add_field(name='Position', value=f"{finalTrackString} `{secToTime(current_position)}/{secToTime(duration)}`", inline = False)
+    thisEmbed.add_field(name='', value=f"**requested by** {author}", inline = False)
+    thisEmbed.set_thumbnail(url=thumbnail)
+    await message.channel.send(embed=thisEmbed, file=file)  
 
 def time_to_seconds(time_str):
     parts = time_str.split(':')
@@ -154,7 +169,7 @@ def time_to_seconds(time_str):
     else:
         raise ValueError("Invalid time format. Use 'minutes:seconds' or 'seconds'.")
 
-def helpPagesCreation(message): 
+def queuePagesCreation(message): 
     guild_id = message.guild.id
     current_song_data = current_song[guild_id]   
     #page c'est une liste d'embed
@@ -166,12 +181,14 @@ def helpPagesCreation(message):
     duration = current_song_data[2]
     ytbUrl = current_song_data[3]
     channel = current_song_data[4]
-    author = current_song_data[5].name
+    thumbnail = current_song_data[5]
+    author = current_song_data[6].name
     # Now Playing
     musicTitle = truncateTitle(title,channel)
     thisEmbed, file = createEmbed()
     thisEmbed.set_author(name='Queue ♪', icon_url=('attachment://musicIcon.png'))
     thisEmbed.add_field(name='', value=f"**Now Playing**\n[{musicTitle}]({ytbUrl}) [``{secToTime(duration)}``] (by `{author}`)", inline=False)
+    thisEmbed.set_thumbnail(url=thumbnail)
     cReturn += 2
     # Next Songs
     ind = 0
@@ -188,7 +205,7 @@ def helpPagesCreation(message):
         duration = tup[2]
         ytbUrl = tup[3]
         channel = tup[4]
-        author = tup[5].name
+        author = tup[6].name
         sumDuration += duration
         musicTitle = truncateTitle(title,channel)
         value += f"\n**{ind}.** [{musicTitle}]({ytbUrl}) [``{secToTime(duration)}``] (by `{author}`)"
@@ -250,30 +267,63 @@ async def music(message,client):
         else: #classic
             data = await loop.run_in_executor(None, lambda: ytdl.extract_info(f"ytsearch:{query}", download=False))
 
+        ind = 0
         if 'entries' in data:
             if 'entries' in data: #playlist
                 for elem in data["entries"]:
+                    ind += 1
+                    #if ind == 1: print(elem)
                     song = elem['url']
                     title = elem['title']
                     duration = elem["duration"]
                     ytbUrl = elem['original_url']
                     channel = elem['channel']
+                    thumbnail = elem['thumbnail']
                     if guild_id not in queues:
                         queues[guild_id] = []
-                    queues[guild_id].append((song, title, duration, ytbUrl, channel, message.author))
-                await message.channel.send(f"Added playlist to the queue !")           
+                    queues[guild_id].append((song, title, duration, ytbUrl, channel, thumbnail, message.author))
                 await waitMessage.delete()
+                await message.channel.send('Playlist added to queue')
+                # à enlever
+                if voice_client.is_playing():
+                    currentSongLeft = current_song[guild_id][2] - (time.time() - play_start_time.get(guild_id, 0) + (0 if actTimecode.get(guild_id) is None else actTimecode.get(guild_id))) + 1
+                    totalDuration = currentSongLeft
+                    for tup in queues.get(guild_id)[:-1]:
+                        totalDuration += tup[2]
+                    thisEmbed, file = createEmbed()
+                    thisEmbed.set_author(name='Added to queue ♪', icon_url=('attachment://musicIcon.png'))
+                    thisEmbed.description = f"[{title}]({ytbUrl})"
+                    thisEmbed.add_field(name='Channel', value=f"{channel}", inline = True)
+                    thisEmbed.add_field(name='Song Duration', value=f"{secToTime(duration)}", inline = True)
+                    thisEmbed.add_field(name='Time until playing', value=f"{secToTime(totalDuration)}", inline = True)
+                    thisEmbed.add_field(name='Position in queue', value=f"{len(queues[guild_id])}", inline = False)
+                    thisEmbed.set_thumbnail(url=thumbnail)
+                    await message.channel.send(embed=thisEmbed, file=file)     
             else:#one
                 song = data['entries'][0]['url']
                 title = data['entries'][0]['title']
                 duration = data["entries"][0]["duration"]
                 ytbUrl = data["entries"][0]['original_url']
                 channel = data["entries"][0]['channel']
+                thumbnail = data["entries"][0]['thumbnail']
                 if guild_id not in queues:
                     queues[guild_id] = []
-                queues[guild_id].append((song, title, duration, ytbUrl, channel, message.author))
+                queues[guild_id].append((song, title, duration, ytbUrl, channel, thumbnail, message.author))
                 await waitMessage.delete()
-                if voice_client.is_playing() : await message.channel.send(f"Added `{title}` to the queue !")                
+                if voice_client.is_playing():
+                    currentSongLeft = current_song[guild_id][2] - (time.time() - play_start_time.get(guild_id, 0) + (0 if actTimecode.get(guild_id) is None else actTimecode.get(guild_id))) + 1
+                    totalDuration = currentSongLeft
+                    for tup in queues.get(guild_id)[:-1]:
+                        totalDuration += tup[2]
+                    thisEmbed, file = createEmbed()
+                    thisEmbed.set_author(name='Added to queue ♪', icon_url=('attachment://musicIcon.png'))
+                    thisEmbed.description = f"[{title}]({ytbUrl})"
+                    thisEmbed.add_field(name='Channel', value=f"{channel}", inline = True)
+                    thisEmbed.add_field(name='Song Duration', value=f"{secToTime(duration)}", inline = True)
+                    thisEmbed.add_field(name='Time until playing', value=f"{secToTime(totalDuration)}", inline = True)
+                    thisEmbed.add_field(name='Position in queue', value=f"{len(queues[guild_id])}", inline = False)
+                    thisEmbed.set_thumbnail(url=thumbnail)
+                    await message.channel.send(embed=thisEmbed, file=file)             
         else:
             await message.channel.send('No results found.')
             return
@@ -320,7 +370,7 @@ async def music(message,client):
                 voice_clients[guild_id].pause()
                 thisEmbed, file = createEmbed()
                 thisEmbed.set_author(name='Music  ♪', icon_url=('attachment://musicIcon.png'))
-                thisEmbed.add_field(name='', value=f"**Music paused**")
+                thisEmbed.add_field(name='', value=f"**Music paused** ▶️")
                 await message.channel.send(embed=thisEmbed, file=file)
             elif guild_id in voice_clients:
                 thisEmbed, file = createEmbed()
@@ -342,7 +392,7 @@ async def music(message,client):
                 voice_clients[guild_id].resume()
                 thisEmbed, file = createEmbed()
                 thisEmbed.set_author(name='Music  ♪', icon_url=('attachment://musicIcon.png'))
-                thisEmbed.add_field(name='', value=f"**Music resumed**")
+                thisEmbed.add_field(name='', value=f"**Music resumed** ⏸")
                 await message.channel.send(embed=thisEmbed, file=file)
             elif guild_id in voice_clients:
                 thisEmbed, file = createEmbed()
@@ -393,7 +443,7 @@ async def music(message,client):
             await message.channel.send(embed=thisEmbed, file=file)
             return
 
-        pages,file = helpPagesCreation(message)
+        pages,file = queuePagesCreation(message)
         await message.channel.send(embed=pages[0],view = HelperView(pages), file=file)     
          
     elif message.content.strip() in ["!np","!nowplaying"]:
@@ -409,7 +459,7 @@ async def music(message,client):
         random.shuffle(queues[guild_id])
         thisEmbed, file = createEmbed()
         thisEmbed.set_author(name='Music  ♪', icon_url=('attachment://musicIcon.png'))
-        thisEmbed.add_field(name='', value=f"**🔀 Queue shuffled !**")
+        thisEmbed.add_field(name='', value=f"**Queue shuffled 🔀**")
         await message.channel.send(embed=thisEmbed, file=file)
 
     elif message.content.startswith("!remove"):
@@ -426,10 +476,16 @@ async def music(message,client):
             thisEmbed.add_field(name='', value=f"Merci d'indiquer un numéro correct de la **queue**")
             await message.channel.send(embed=thisEmbed, file=file)
             return
+        ytbUrl = current_song[guild_id][3]   
+        channel = current_song[guild_id][4]   
+        thumbnail = current_song[guild_id][5]   
         thisEmbed, file = createEmbed()
-        thisEmbed.set_author(name='Music  ♪', icon_url=('attachment://musicIcon.png'))
-        thisEmbed.add_field(name='', value=f"**Removed** `{queues[guild_id][id][1]}` **from queue**")
-        await message.channel.send(embed=thisEmbed, file=file)
+        thisEmbed.set_author(name='Removed from queue ❌', icon_url=('attachment://musicIcon.png'))
+        thisEmbed.description = f"[{queues[guild_id][id][1]}]({ytbUrl})"
+        thisEmbed.add_field(name='Channel', value=f"{channel}", inline = True)
+        thisEmbed.add_field(name='Position in queue', value=f"{id+1}", inline = True)
+        thisEmbed.set_thumbnail(url=thumbnail)
+        await message.channel.send(embed=thisEmbed, file=file)  
         del queues[guild_id][id]
 
     elif message.content.startswith("!volume"):
@@ -439,7 +495,7 @@ async def music(message,client):
             thisEmbed.add_field(name='', value=f"Merci d'indiquer un volume entre **0.0** et **2.0**")
             await message.channel.send(embed=thisEmbed, file=file)
             return
-        song,title,duration,ytbUrl,channel,author = current_song[guild_id]   
+        song,title,duration,ytbUrl,channel,thumbnail,author = current_song[guild_id]   
         volume = float(message.content.split()[1])
         if (0.0 <= volume <= 2.0) or message.author.id in [172362870439411713,257167325558472705]:  # Limiter le volume entre 0.0 et 2.0
             volume_levels[guild_id] = volume
@@ -453,7 +509,7 @@ async def music(message,client):
                 voice_clients[guild_id].stop()
                 if guild_id not in queues:
                     queues[guild_id] = []
-                queues[guild_id].insert(0,(song, title ,duration,ytbUrl,channel,author))
+                queues[guild_id].insert(0,(song, title ,duration,ytbUrl,channel,thumbnail,author))
                 timecode[guild_id] = time.time() - play_start_time.get(guild_id, 0) + (0 if actTimecode.get(guild_id) is None else actTimecode.get(guild_id))
                 await play_next(message)
         else:
@@ -467,7 +523,7 @@ async def music(message,client):
             return
         #Stop, re-add in first, replay
         if guild_id in voice_clients and voice_clients[guild_id].is_playing():
-            song,title,duration,ytbUrl,channel,author = current_song[guild_id]   
+            song,title,duration,ytbUrl,channel,thumbnail,author = current_song[guild_id]   
             timecode[guild_id] = time_to_seconds(message.content.split()[1])
             if type(timecode[guild_id]) is not int:
                 thisEmbed, file = createEmbed()
@@ -486,7 +542,7 @@ async def music(message,client):
             voice_clients[guild_id].stop()
             if guild_id not in queues:
                 queues[guild_id] = []
-            queues[guild_id].insert(0,(song, title ,duration,ytbUrl,channel,author))
+            queues[guild_id].insert(0,(song, title ,duration,ytbUrl,channel,thumbnail,author))
         else: # si on joue pas c'est inutile
             thisEmbed, file = createEmbed()
             thisEmbed.set_author(name='Music  ♪', icon_url=('attachment://musicIcon.png'))
