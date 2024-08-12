@@ -81,18 +81,21 @@ async def pp(message):
 
 async def cherche_kopain(message):
   BOTID = [850798626946809867,1269278012864594061]
+  ROLEID = 1272661088042881158
   messageArgs = message.content.split()[1:]
+  await message.channel.send(message.guild.get_role(1272661088042881158))
   mention,deranger = False,False
   if("-m" in messageArgs):
      mention = True
   if("-d" in messageArgs):
      deranger = True
   if deranger:
-    online_members = [member for member in message.guild.members if message.channel.permissions_for(member).read_messages and member.id not in BOTID and member.status in {discord.Status.online, discord.Status.idle, discord.Status.dnd}]
+    online_members = [member for member in message.guild.members if message.channel.permissions_for(member).read_messages and member.id not in BOTID and member.status in {discord.Status.online, discord.Status.idle, discord.Status.dnd} and ROLEID in [Rid.id for Rid in member.roles]]
   else:
-    online_members = [member for member in message.guild.members if message.channel.permissions_for(member).read_messages and member.id not in BOTID and member.status in {discord.Status.online, discord.Status.idle}]
+    online_members = [member for member in message.guild.members if message.channel.permissions_for(member).read_messages and member.id not in BOTID and member.status in {discord.Status.online, discord.Status.idle} and ROLEID in [Rid.id for Rid in member.roles]]
 
-  Ts = "Voici la liste des utilisateurs susceptibles d'être ligne :\n"
+  
+  Ts = "Voici la liste des utilisateurs susceptibles d'être disponibles :\n"
   for m in online_members:
     Ts+= ("<@{}>\n".format(str(m.id)) if mention else "{}\n".format(str(m.name)))
   await message.channel.send(Ts)
