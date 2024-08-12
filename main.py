@@ -109,6 +109,19 @@ async def on_member_remove(member):
       await channel_reunion.send(f"{member.name} a quitté le Discord")
       await channel.edit(name=f'Members: {(member.guild.member_count)-4}')
 
+@client.event
+
+async def on_voice_state_update(member, before, after):
+  if after.channel is not None and after.channel.id == 789982186036002827:
+    role = discord.utils.get(member.guild.roles, id=1175223925953794244)
+    if role:
+      await member.add_roles(role)
+
+  elif before.channel is not None and before.channel.id == 789982186036002827:
+    role = discord.utils.get(member.guild.roles, id=1175223925953794244)
+    if role:
+      await member.remove_roles(role)
+
 #==========================================================================
 
 TOKEN=os.getenv("TOKEN")
