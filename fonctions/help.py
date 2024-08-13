@@ -47,10 +47,18 @@ def helpPagesCreation(message):
     }
 
     COMMAND_MUSIQUE = {\
+        "!play *lien/titre*": "jouer la musique",\
+        "!skip": "passer la musique",\
         "!join": "rejoindre le channel vocal",\
         "!leave": "quitter le channel vocal",\
-        "!play *lien*": "jouer la musique",\
-        "!skip": "passer la musique",\
+        "!queue": "afficher la queue",\
+        "!shuffle": "mélanger la queue",\
+        "!np": "afficher la musique en cours",\
+        "!pause": "mettre la musique en pause",\
+        "!resume": "reprendre la musique mise en pause",\
+        "!remove *n°*": "supprimer une musique de la queue",\
+        "!goto *timer*": "se déplacer à un moment de la musique",\
+        "!volume *value*": "modifier le volume du bot entre 0 et 2 (0.25 par défaut)",\
     }
 
     COMMAND_CALCULS = {\
