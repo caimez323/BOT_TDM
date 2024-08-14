@@ -230,6 +230,8 @@ async def music(message,client):
     global queues
     global current_voice_channel
     global goto
+    if message is None:
+        return
     guild_id = message.guild.id
     if len(keyInfo) != 4: #not setup yet:
         keyInfo.append(client)#0
