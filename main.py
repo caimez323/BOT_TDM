@@ -1,6 +1,7 @@
 import os
 import discord
 from discord import app_commands
+from discord.ext import tasks
 import random
 import asyncio
 from dotenv import load_dotenv
@@ -30,6 +31,10 @@ async def on_ready():
   #Slash command
   await tree.sync(guild=discord.Object(id=myGuildID))
 
+#ytb alert:
+@tasks.loop(minutes=10)
+async def checkLauncher():
+  await f.ytbAlert.check_new_video(client)
 
 @client.event
 async def on_message(message):
@@ -122,6 +127,8 @@ async def on_voice_state_update(member, before, after):
       await member.remove_roles(role)
 
 #==========================================================================
+
+
 
 TOKEN=os.getenv("TOKEN")
 client.run(TOKEN)
