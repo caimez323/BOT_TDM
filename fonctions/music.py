@@ -38,7 +38,11 @@ class HelperView(View):
 queues = {}
 voice_clients = {}
 current_voice_channel = ""
-yt_dl_options = {"format": "bestaudio/best"}
+yt_dl_options = {
+    "format": "bestaudio/best",
+    "default_search": "ytsearch",
+    "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+}
 ytdl = yt_dlp.YoutubeDL(yt_dl_options)
 goto = False
 
@@ -230,7 +234,7 @@ async def music(message,client):
     global queues
     global current_voice_channel
     global goto
-    if message is None:
+    if message is None or message.guild is None:
         return
     guild_id = message.guild.id
     if len(keyInfo) != 4: #not setup yet:
