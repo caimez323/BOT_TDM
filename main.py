@@ -42,10 +42,13 @@ async def on_message(message):
   if message.author == client.user:
     return
 
+  if message.channel.id == 1270483670079111289 and client.user.id == 850798626946809867: #bot_commandes_dev ; BOT_TDM
+    return
+  
 #==========> HELP <==========
   if message.content.startswith("!help"):
     await f.help(message)
-
+  
 #==========> CUSTOM MSG <==========  
   await f.customWords(message)
 

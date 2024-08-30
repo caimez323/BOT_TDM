@@ -3,7 +3,7 @@ from discord.ext import commands
 import requests
 import pytesseract
 from io import BytesIO
-from PIL import Image
+from PIL import Image, ImageEnhance, ImageFilter
 import pyautogui
 import io
 import numpy as np
@@ -102,45 +102,41 @@ def cleanMsg(extracted_text):
     final_text = "\n".join(cleaned_text)
     return final_text
 
+async def preprocess_image(img):
+    # Convertir en niveaux de gris
+    img = img.convert('L')
+
+    # Appliquer un filtre de flou pour réduire le bruit
+    img = img.filter(ImageFilter.MedianFilter())
+
+    # Augmenter le contraste
+    # enhancer = ImageEnhance.Contrast(img)
+    # img = enhancer.enhance(2)
+
+    # Augmenter la netteté
+    enhancer = ImageEnhance.Sharpness(img)
+    img = enhancer.enhance(2)
+
+    return img
+
 async def jumbledWordsResolver(message):
     if (message.content.lower().startswith("!jb") and message.attachments) or (message.attachments and message.channel.id == 1271525568625639566):
         for attachment in message.attachments:
-            print("image")
-            image_url = attachment.url
-            response = requests.get(image_url)
+            response = requests.get(attachment.url)
             img = Image.open(BytesIO(response.content))
 
-            # Convertir l'image PIL en format numpy pour utiliser OpenCV
-            img_cv = np.array(img)
-
-            # Convertir en niveaux de gris
-            gray = cv2.cvtColor(img_cv, cv2.COLOR_BGR2GRAY)
-
-            # (Optionnel) Sauvegarder l'image pour voir le résultat
-            #cv2.imwrite('gray_image.png', gray)
-
-            # Convertir l'image traitée de retour au format PIL
-            img_preprocessed = Image.fromarray(gray)
-
-            # Configuration de Tesseract
-            custom_config = r'--oem 3 --psm 6'
+            #img = await preprocess_image(img)
 
             # Utiliser pytesseract pour extraire le texte de l'image prétraitée
-            extracted_text = pytesseract.image_to_string(img_preprocessed, config=custom_config)
-
-            # Supprimer les espaces et les caractères indésirables
-            extracted_text = cleanMsg(extracted_text)
+            extracted_text = pytesseract.image_to_string(img)
 
             # Afficher le texte extrait pour le débogage
             await message.channel.send(extracted_text)
 
-            # Envoyer le texte extrait au resolver
-            #await resolver(message, extracted_text)
+    # if message.channel.id == 1271525568625639566 and not message.attachments:
+    #     await resolver(message, message.content)
 
-    if message.channel.id == 1271525568625639566 and not message.attachments:
-        await resolver(message, message.content)
-
-    if message.content.startswith("!g"):
-        content = message.content[2:].strip()
-        print("Message reçu pour !g:", content)
-        await resolver(message, content)
+    # if message.content.startswith("!g"):
+    #     content = message.content[2:].strip()
+    #     print("Message reçu pour !g:", content)
+    #     await resolver(message, content)
