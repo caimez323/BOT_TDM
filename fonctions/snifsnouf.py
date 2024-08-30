@@ -26,7 +26,7 @@ firebase_admin.initialize_app(cred, {
   "databaseURL": "https://snifsnoufdataconnect-default-rtdb.europe-west1.firebasedatabase.app/",
 })
 ref = db.reference('/')  # starting point
-
+mainList = ""
 bot_prefix = "!"
 
 def syncroFireBase(currList):
@@ -53,9 +53,9 @@ def createBat(currList):
 
 
 async def snifsnouf(message):
-
+        global mainList
+        if mainList == "": mainList = ref.get()
         if message.author.id in [172362870439411713,257167325558472705]: #Laiken or Caimez
-            mainList = ref.get()
             if message.content == bot_prefix+'list': # Affiche la liste en clair
                 disString =""
                 for name in mainList:
