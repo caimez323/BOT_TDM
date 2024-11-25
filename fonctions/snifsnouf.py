@@ -31,7 +31,7 @@ bot_prefix = "!"
 
 def syncroFireBase(currList):
     for index,name in enumerate(currList):
-        ref.child(str(index)).set(name)
+        ref.child(str(index)).set([0,name])
 
 def tryAddElem(newElem,currList):
     added = False
@@ -50,11 +50,17 @@ def createBat(currList):
         batFile.write('\nfor %%i in (%list%) do (\n\tstart "" "https://www.instant-gaming.com/fr/giveaway/%%i"\n)')
         batFile.write('\nendlocal\nexit')
 
+def split_message(message, max_length=2000):
+    return [message[i:i+max_length] for i in range(0, len(message), max_length)]
 
 
 async def snifsnouf(message):
         global mainList
-        if mainList == "": mainList = ref.get()
+        if mainList == "": 
+            mainList = []
+            for elem in ref.get():
+                mainList.append(elem[1])
+            #mainList = ref.get()
         if message.author.id in [172362870439411713,257167325558472705]: #Laiken or Caimez
             if message.content == bot_prefix+'list': # Affiche la liste en clair
                 disString =""
@@ -78,7 +84,10 @@ async def snifsnouf(message):
             await message.channel.send(file=attachment,content='Liste Macro créée')
 
         if message.content == bot_prefix+'isWebUp' or message.content == bot_prefix+'iwu':
-            displayString = "Database local non syncronisée" if ref.get() != mainList else "Les databases sont syncros"
+            webList = []
+            for elem in ref.get():
+                webList.append(elem[1])
+            displayString = "Database local non syncronisée" if webList != mainList else "Les databases sont syncros"
             await message.channel.send(displayString)
 
         if message.content == bot_prefix+'dataSync':
