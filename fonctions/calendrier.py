@@ -1,6 +1,7 @@
 import os
 import requests
 import json
+import re
 
 cookie_session = os.getenv("COOKIES_ADV")
 
@@ -17,12 +18,22 @@ headers = {
 }
 
 
+def extract_numbers(line):
+    match = re.search(r'\[\s*(\d+)-(\d+)\s*\]', line)
+    if match:
+        first_number = int(match.group(1))
+        second_number = int(match.group(2))
+        return (first_number, second_number)
+    return (float('inf'), float('inf'))
+
+
 async def adv_code_leaderboard(message):
     response = requests.get(url, cookies=cookies, headers=headers)
     response.raise_for_status()
     data = response.json()
 
     bigString = ""
+    toBeSorted = []
     for k,v in data['members'].items():
         #TODO maybe sort by order if needed ?
         listejours =""
@@ -33,8 +44,12 @@ async def adv_code_leaderboard(message):
             listejours+= ", "+str(jours)
         memberString = "{:<11}".format(v["name"])
         memberString = memberString+ " [ " +str(v["stars"])+ "-"+str(v["local_score"])+ " ]" + "   Jours : "+listejours
-        
-        bigString+= memberString+"\n"
+        toBeSorted.append(memberString)
+
+    # Trier en utilisant les nombres extraits
+    sorted_lines = sorted(toBeSorted, key=extract_numbers,reverse=True)
+    for line in sorted_lines:
+        bigString+= line+"\n"
     await message.channel.send(bigString)
     return 0
 
