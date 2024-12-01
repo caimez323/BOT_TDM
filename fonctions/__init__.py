@@ -11,3 +11,4 @@ from .clash import clash
 from .help import help
 #from .jumbledWordsRes.jumbledWordsResolver import jumbledWordsResolver
 from .ytbAlert import check_new_video
+from .calendrier import calendrier
