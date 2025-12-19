@@ -42,7 +42,11 @@ async def on_message(message):
   if message.author == client.user:
     return
 
-  if message.channel.id == 1270483670079111289 and client.user.id == 850798626946809867: #bot_commandes_dev ; BOT_TDM
+  #L'empêche d'écrire dans le channel débug
+  # if message.channel.id == 1270483670079111289 and client.user.id == 850798626946809867: #bot_commandes_dev ; BOT_TDM
+  #   return
+  
+  if client.user.id == 850798626946809867: #bot_commandes_dev ; BOT_TDM
     return
   
 #==========> HELP <==========
