@@ -77,9 +77,9 @@ def helpPagesCreation(message):
     COMMAND_SNIFSNOUF = {\
         "!addList": "ajoute un créateur à la liste",\
         "!website": "affiche le site web",\
-        "!macro ": "génère une macro téléchargeable pour tout ouvrir d'un coup",\
-        "!iwu": "vérifie si la database est syncro avec le snifSnouf",\
-        "!dataSync ": "syncronisation de la database avec le snifsnouf",\
+        "!listMacro ": "génère une macro téléchargeable pour tout ouvrir d'un coup",\
+        "!iwu": "vérifie si la database est syncro avec le SnifSnouf",\
+        "!dataSync ": "syncronisation de la database avec le SnifSnouf",\
     }
 
     COMMAND_CUSTOMWORDS = [

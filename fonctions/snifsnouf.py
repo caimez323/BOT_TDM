@@ -76,7 +76,7 @@ async def snifsnouf(message):
             await message.channel.send(displayString)
 
         if message.content == bot_prefix+'website': # Donne le lien du site
-            await message.channel.send('Le site est : https://caimez323.github.io/src/snifsnouf.html')
+            await message.channel.send('Le site est : https://caimez323.github.io/src/snifSnouf/snifsnouf.html')
         
         if message.content == bot_prefix+'listMacro': # Crée un fichier macro à DL qui ouvre tout
             createBat(mainList)
@@ -96,7 +96,8 @@ async def snifsnouf(message):
             await message.channel.send("Données du bot syncronisées avec le site")
         
         if message.content == bot_prefix+"snifHelp":
-            return
+            return 
+            #Code initialement prévu pour le bot standalone
             displayString = "Liste des commandes : \n"
             displayString +="> **{}list** : permet de lister les créateurs déjà enregistrés \n".format(bot_prefix)
             displayString +="> **{}addList** : permet d'ajoute un créateur à la liste\n".format(bot_prefix)
