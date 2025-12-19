@@ -1,0 +1,9 @@
+discord
+python-dotenv
+pynacl
+numpy
+pytube
+firebase-admin
+yt-dlp
+pytesseract
+pyautogui
