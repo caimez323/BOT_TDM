@@ -78,9 +78,6 @@ async def on_message(message):
   await f.recherche(message)
 
   #await f.jumbledWordsResolver(message)
-
-#==========> CODE DE L AVANT <==========
-  await f.calendrier(message)
   
 #TODO 
   if message.content.startswith("!clash"): 

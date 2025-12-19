@@ -70,7 +70,7 @@ def helpPagesCreation(message):
     COMMAND_RECHERCHE = {\
         "!w2g": "affiche le lien du Watch2Gether",\
         "!pp *nom/id/mention*": "affiche la photo de profil d'un membre",\
-        "!ytb *titre/lien de la vidéo*": "affiche les 3 premières vidéos Youtube de la recherche",\
+        "!ytb *titre/lien de la vidéo*": "affiche les 5 premières vidéos Youtube de la recherche",\
         "!clash": "en développement",\
     }
     

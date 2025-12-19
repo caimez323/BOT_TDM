@@ -30,6 +30,7 @@ class PaginationView(View):
 
 async def youtube_search(message):
 
+  maxRecherches = 5
   liste = message.content.split()
   del liste[0]
   search = ""
@@ -45,7 +46,7 @@ async def youtube_search(message):
   displayString = ""
   checkList = []
   index = 0
-  while len(checkList) <3 and index <9999:
+  while len(checkList) <maxRecherches and index <9999:
     theString = 'http://www.youtube.com/watch?v={}'.format(search_results[index])
     index+=1
     if theString in checkList:
