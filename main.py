@@ -29,7 +29,7 @@ async def on_ready():
   print('Le bot {0.user} est prêt'.format(client))
 
   #Slash command
-  await tree.sync(guild=discord.Object(id=myGuildID))
+  #await tree.sync(guild=discord.Object(id=myGuildID))
 
 #ytb alert:
 @tasks.loop(minutes=10)
@@ -45,9 +45,6 @@ async def on_message(message):
   #L'empêche d'écrire dans le channel débug
   # if message.channel.id == 1270483670079111289 and client.user.id == 850798626946809867: #bot_commandes_dev ; BOT_TDM
   #   return
-  
-  if client.user.id == 850798626946809867: #bot_commandes_dev ; BOT_TDM
-    return
   
 #==========> HELP <==========
   if message.content.startswith("!help"):

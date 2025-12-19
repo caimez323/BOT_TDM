@@ -1,7 +1,6 @@
 import discord,os
 from googleapiclient.discovery import build
 
-# Remplacez par vos informations
 YOUTUBE_API_KEY = os.getenv("YOUTUBE_API_KEY")
 DISCORD_CHANNEL_ID = 1270483670079111289  # ID du salon Discord
 CHANNELS = {
